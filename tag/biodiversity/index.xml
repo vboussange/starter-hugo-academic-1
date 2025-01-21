@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Biodiversity | Victor Boussange</title>
+    <link>https://vboussange.github.io/tag/biodiversity/</link>
+      <atom:link href="https://vboussange.github.io/tag/biodiversity/index.xml" rel="self" type="application/rss+xml" />
+    <description>Biodiversity</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 07 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>Biodiversity</title>
+      <link>https://vboussange.github.io/tag/biodiversity/</link>
+    </image>
+    
+    <item>
+      <title>Paleoenvironments shaped the exchange of terrestrial vertebrates across Wallace’s Line</title>
+      <link>https://vboussange.github.io/publication/dream/</link>
+      <pubDate>Fri, 07 Jul 2023 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/publication/dream/</guid>
+      <description>&lt;!-- 
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Create your slides in Markdown - click the &lt;em&gt;Slides&lt;/em&gt; button to check out the example.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+Supplementary notes can be added here, including [code, math, and images](https://wowchemy.com/docs/writing-markdown-latex/). --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Eco-evolutionary model on spatial graphs reveals how habitat structure affects phenotypic differentiation</title>
+      <link>https://vboussange.github.io/publication/differentiation-in-graphs/</link>
+      <pubDate>Wed, 06 Jul 2022 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/publication/differentiation-in-graphs/</guid>
+      <description>&lt;!-- 
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Create your slides in Markdown - click the &lt;em&gt;Slides&lt;/em&gt; button to check out the example.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+Supplementary notes can be added here, including [code, math, and images](https://wowchemy.com/docs/writing-markdown-latex/). --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Gaining a mechanistic understanding of spatial biodiversity patterns</title>
+      <link>https://vboussange.github.io/project/diff-in-graphs/</link>
+      <pubDate>Sat, 27 Apr 2019 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/project/diff-in-graphs/</guid>
+      <description>&lt;p&gt;Biodiversity results from differentiation mechanisms developing within biological populations. Such mechanisms are influenced by the properties of the landscape over which individuals interact, disperse and evolve. The documentation of high levels of species diversity in complex mountain region or riverine systems suggest that some &lt;strong&gt;peculiar landscape properties foster diversity&lt;/strong&gt;. I use mathematical models to investigate how connectivity and habitat heterogeneity foster diversity. My modeling approach complements empirical work on biodiversity by connecting documented patterns to the processes that have generated it.&lt;/p&gt;
+&lt;!-- only necessary when there is no featured publications --&gt;
+&lt;!-- #### Related papers
+- Boussange, V. &amp; Pellissier, L., _Topology and habitat assortativity drive neutral and adaptive diversification in spatial graphs_, [bioRxiv](https://www.biorxiv.org/content/10.1101/2021.07.06.451404.abstract) (2021), 25 pages. Revision requested from Communications Biology. --&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

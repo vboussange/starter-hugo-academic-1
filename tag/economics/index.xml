@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Economics | Victor Boussange</title>
+    <link>https://vboussange.github.io/tag/economics/</link>
+      <atom:link href="https://vboussange.github.io/tag/economics/index.xml" rel="self" type="application/rss+xml" />
+    <description>Economics</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 27 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>Economics</title>
+      <link>https://vboussange.github.io/tag/economics/</link>
+    </image>
+    
+    <item>
+      <title>Econobiology: What can economics learn from biology?</title>
+      <link>https://vboussange.github.io/project/econobiology/</link>
+      <pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/project/econobiology/</guid>
+      <description>&lt;p&gt;The fields of Evolutionary Biology and Economics have mutually exchanged ideas that lead to breakthrough for the past two centuries, starting with Darwin who got inspired from the economist Malthus for developing his theory on Evolution. Indeed, it is more and more acknowledged that companies, which are structured around market niches within which they develop competitive and mutualistic interactions, interact in similar ways as biological species. I rely on scientific machine learning to better understand how &lt;strong&gt;evolutionary processes arising in economic systems connect to those observed in biological systems&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

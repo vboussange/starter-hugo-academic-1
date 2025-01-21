@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sailing | Victor Boussange</title>
+    <link>https://vboussange.github.io/tag/sailing/</link>
+      <atom:link href="https://vboussange.github.io/tag/sailing/index.xml" rel="self" type="application/rss+xml" />
+    <description>Sailing</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 26 May 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>Sailing</title>
+      <link>https://vboussange.github.io/tag/sailing/</link>
+    </image>
+    
+    <item>
+      <title>Open source navigation system for sailing</title>
+      <link>https://vboussange.github.io/post/navigationsystem/</link>
+      <pubDate>Fri, 26 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/navigationsystem/</guid>
+      <description>&lt;p&gt;&lt;em&gt;Back in the days, people used to orient themselves with paper maps and the stars or with a sextant. Unfortunately, we have lost this knowledge. It would now be difficult, at least for me, to live without a digital map and a GPS. In this blog post, I detail how to set up a handy navigation system for sailing, using a Raspberry Pi and OpenPlotter to transmit GPS and AIS signals over Wifi to the Navionics Boating app.&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;choosing-the-right-chart-maps&#34;&gt;Choosing the Right Chart Maps&lt;/h2&gt;
+&lt;p&gt;There are plenty of digital chart map options available for navigation, and we had to figure out which one would fit our need on the boat. After careful consideration, we narrowed down our choices to two alternatives: &lt;a href=&#34;https://www.o-charts.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;o-charts charts&lt;/a&gt;, to be used in combination with OpenCPN, an open source navigation software, or &lt;a href=&#34;https://www.navionics.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Navionics&lt;/a&gt; charts, to be used with the &amp;ldquo;Navionics Boating&amp;rdquo; application. Both had a similar pricing for what we wanted (charts for Germany, Denmark, Sweden, Norway, Shetland Islands, UK, Ireland and France): around 120-150EUR, with a slight advantage for Navionics. Pros for o-charts is that you can use them more than one year, although the update option is only valid for a year (I think, although I am not 100% sure). Navionics charts is only valid for a year, the period of the subscription. Pros for Navionics is that you can use your subscription on many devices (at least 5, I think), while you cannot use o-charts on iOS devices and on more than 2 devices. Because we wanted to have charts on our smartphones, we decided to go for Navionics.&lt;/p&gt;
+&lt;h2 id=&#34;the-importance-of-accurate-gps-and-ais&#34;&gt;The Importance of Accurate GPS and AIS&lt;/h2&gt;
+&lt;p&gt;While our smartphones&amp;rsquo; GPS serves us well in our daily lives, accurate positioning becomes critical when sailing. It ensures that we navigate safely, avoiding shallow waters and potential collisions. Additionally, during nighttime navigation, an instrument called AIS (Automatic Identification System) proves invaluable by providing information about nearby large ships.&lt;/p&gt;
+&lt;p&gt;In the following, I explain how I installed a server on our boat that transmits GPS and AIS to the &amp;ldquo;Navionics Boating&amp;rdquo; application our smartphone and tablets through Wifi. For this, I used a Raspberry Pi 4, OpenPlotter, and a GPS beacon and a radio antenna fixed on the outside of the boat and connected to the Raspberry.&lt;/p&gt;
+&lt;h2 id=&#34;installing-openplotter-on-the-raspberry-pi&#34;&gt;Installing OpenPlotter on the Raspberry Pi&lt;/h2&gt;
+&lt;p&gt;To get started, you need to install &lt;a href=&#34;https://openmarine.net/openplotter&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OpenPlotter&lt;/a&gt;, a Linux distribution designed for Raspberry Pi and that contains the essential softwares for navigation. I used the 64-bit &lt;a href=&#34;https://openplotter.readthedocs.io/en/latest/getting_started/downloading.html#openplotter-starting&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OpenPlotter Starting image&lt;/a&gt; that contains an appropriate pre-built kernel. To install it, you&amp;rsquo;ll need a less than 32GB SD-card, to be formatted in FAT32. My problem was that the SD card I had had already been used on a Raspberry Pi, and as such contained an EXT4 partition. EXT4 partitions are used by Linux systems, but are not recognized by MacOS. This prevented me to format the card in FAT32. To allow formatting, I used the &lt;code&gt;diskutil&lt;/code&gt; utility from MacOS.&lt;/p&gt;
+&lt;p&gt;First run&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;diskutil list&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;in the Terminal. This allows you to identify your SD card, in my case &lt;code&gt;/dev/disk4&lt;/code&gt;.  I had previously installed &lt;a href=&#34;https://medium.com/@iamalleksy/how-to-mount-raspberry-pi-sd-card-using-mac-3046abc2059a&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;ext4fuse&lt;/code&gt;&lt;/a&gt;, not sure if this is a required step. To format the SD card, execute the command&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo diskutil eraseDisk FAT32 RASPBERRY MBRFormat /dev/disk4
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can change &lt;code&gt;RASPBERRY&lt;/code&gt; with any name you like best. More details of this command in &lt;a href=&#34;https://superuser.com/questions/527657/how-do-you-format-a-2-gb-sd-card-to-fat32-preferably-with-disk-utility&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this thread&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now the SD card is ready to be used. Download the &lt;a href=&#34;https://www.raspberrypi.com/software/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Raspberry Pi Imager&lt;/a&gt; to install the image on the SD card. You first need to unzip the image, then execute Raspberry Pi Imager, click &amp;ldquo;Choose OS&amp;rdquo; and click on &amp;ldquo;Use custom&amp;rdquo;. Locate the &lt;code&gt;.img&lt;/code&gt; file, then choose the SD card in &amp;ldquo;Choose storage&amp;rdquo; and hit &amp;ldquo;Write&amp;rdquo;. The SD card is ready. Insert it in the Raspberry Pi and swith the power on. The system is going boot on the SD card and set up OpenPlotter. This took a relatively short amount of time.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-openplotter&#34;&gt;Setting up OpenPlotter&lt;/h2&gt;
+&lt;p&gt;I had an external monitor that I could use for the Raspberry Pi. I encountered a minor hurdle as OpenPlotter failed to identify it correctly, and did not properly display. I had to adjust the resolution of the screen by hitting the raspberry, then &amp;ldquo;Preferences&amp;rdquo; and &amp;ldquo;Screen configuration&amp;rdquo;. Check also the configuration of the monitor, that may be set to zoom in the visual signal.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-the-gps&#34;&gt;Setting up the GPS&lt;/h2&gt;
+&lt;p&gt;Configuring the GPS was a straightforward process that involved following &lt;a href=&#34;https://youtu.be/r8CGixMl18k?t=358&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this tutorial&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-the-ais&#34;&gt;Setting up the AIS&lt;/h2&gt;
+&lt;p&gt;Similar to configuring the GPS, we followed &lt;a href=&#34;https://www.youtube.com/watch?v=qEeyl-WSDHk&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this video tutorial&lt;/a&gt; (in French, with translation available) to set up the AIS system. At first, I did not correctly calibrate the PPM offset, and although I did follow the rest of the procedure correctly, I had an &amp;ldquo;inactive&amp;rdquo; AIS process. I then redid the whole procedure, properly waiting for more than an hour to get the PPM initial guess correct, and with this value, I did manage to make it work.&lt;/p&gt;
+&lt;h2 id=&#34;getting-the-signal-on-navionics-through-openplotter-access-point&#34;&gt;Getting the signal on Navionics through OpenPlotter Access Point&lt;/h2&gt;
+&lt;p&gt;To transmit the GPS and AIS data to the Navionics application, we established an access point using the Raspberry Pi. This allowed us to create a Wi-Fi network, enabling our devices to receive the signals. We followed this &lt;a href=&#34;https://www.youtube.com/watch?v=tlU4HKT6XxM&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this video&lt;/a&gt; to set up the access point, which provided clear instructions for this setup.&lt;/p&gt;
+&lt;p&gt;I did struggle to switch off the access point to connect back the Raspberry Pi to a Wifi network with Internet in order to do some updates and download a few stuff. It turns out it is quite easy. Go to the Network app, and on the Network mode tab, select back for &amp;ldquo;AP&amp;rdquo; &amp;ldquo;non&amp;rdquo; instead of &amp;ldquo;xx:xx:..:xx on board&amp;rdquo;. Then hit the pen and sd card button, and reboot. Now you can connect back to a wifi network.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-a-ssh-connection-to-transfer-big-files&#34;&gt;Setting up a SSH connection to transfer big files&lt;/h2&gt;
+&lt;p&gt;I could not properly download the charts I needed on the Raspberry Pi because the wifi on the boat was too weak. So I decided to download it on my smartphone that I could bring closer to the hotspot, and then transfer the files to the Raspberry Pi. In order to facilitate the process, I installed a SSH connection between my laptop and the Pi, then transferred through Airdrop the charts from my phone to my laptop, and then from the laptop to the Pi with SSH and the &lt;code&gt;scp&lt;/code&gt; command. To enable the SSH access, click on the Raspberry, then &amp;ldquo;Raspberry Pi Configuration&amp;rdquo;, the go to the &amp;ldquo;Interfaces&amp;rdquo; tab and enable SSH. From your laptop, connect to the Raspberry AP, go to the terminal and run&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ssh pi@openplotter.local
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The password by default is &lt;code&gt;raspberry&lt;/code&gt; (this is indicated &lt;a href=&#34;https://openplotter.readthedocs.io/en/latest/getting_started/installing.html?highlight=ssh#headless&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;). Then you can use the following command to transfer any folder to the Pi&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;scp -r path/to/folder/on/laptop pi@openplotter.local:/home/pi/path/you/want/to/drop/the/folder
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;useful-links&#34;&gt;Useful links&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.o-charts.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;o-charts charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.navionics.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Navionics charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://openmarine.net/openplotter&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OpenPlotter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://openplotter.readthedocs.io/en/latest/getting_started/downloading.html#openplotter-starting&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OpenPlotter Starting image&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@iamalleksy/how-to-mount-raspberry-pi-sd-card-using-mac-3046abc2059a&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ext4fuse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.raspberrypi.com/software/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Raspberry Pi Imager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/r8CGixMl18k?t=358&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tutorial: Setting up GPS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/r8CGixMl18k&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tutorial: Setting up AIS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=tlU4HKT6XxM&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tutorial: Creating OpenPlotter Access Point&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://openplotter.readthedocs.io/en/latest/getting_started/installing.html?highlight=ssh#headless&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tutorial: SSH Connection&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

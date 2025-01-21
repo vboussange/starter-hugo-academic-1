@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Demo | Victor Boussange</title>
+    <link>https://vboussange.github.io/category/demo/</link>
+      <atom:link href="https://vboussange.github.io/category/demo/index.xml" rel="self" type="application/rss+xml" />
+    <description>Demo</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sat, 09 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>Demo</title>
+      <link>https://vboussange.github.io/category/demo/</link>
+    </image>
+    
+    <item>
+      <title>Parameter Inference in dynamical systems</title>
+      <link>https://vboussange.github.io/post/param-inference/</link>
+      <pubDate>Sat, 09 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/param-inference/</guid>
+      <description>&lt;p&gt;One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. This can be done via direct measurements through experimental design, but this process is often costly, time consuming and even sometimes not possible.
+Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data.
+In this blog post, I shall explain the basics of this approach, and how the Julia ecosystem has efficiently embedded such techniques into ready to use packages. This promises exciting perspectives for modellers in all areas of environmental sciences.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🚧 This is Work in progress 🚧&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dynamical systems are models that allow to reproduce, understand and forecast systems. They connect the time variation of the state of the system to the fundamental processes we believe driving it, that is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation*}
+\text{ time variation of }  🌍_t  = \sum \text{processes acting on }  🌍_t
+\end{equation*}
+$$&lt;/p&gt;
+&lt;p&gt;where $🌍_t$ denotes the state of the system at time $t$. This translates mathematically into&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\partial_t(🌍_t) = f_\theta( 🌍_t )
+\end{equation}\tag{1}
+$$&lt;/p&gt;
+&lt;p&gt;where the function $f_\theta$ captures the ensembles of the processes considered, and depend on the parameters $\theta$.&lt;/p&gt;
+&lt;p&gt;Eq. (1) is a Differential Equation, that can be integrated with respect to time to obtain the state of the system at time $t$ given an initial state $🌍_{t_0}$.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+🌍_t = 🌍_{t_0} + \int_0^t f_\theta( 🌍_s ) ds
+\end{equation}\tag{2}
+$$&lt;/p&gt;
+&lt;p&gt;Dynamical systems have been used for hundreds of years and have successfully captured e.g. the motion of planets (&lt;a href=&#34;https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion#Second_law&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;second law of Kepler&lt;/a&gt;), &lt;a href=&#34;https://en.wikipedia.org/wiki/RC_circuit#Natural_response&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;the voltage in an electrical circuit&lt;/a&gt;, population dynamics (&lt;a href=&#34;https://en.wikipedia.org/wiki/Lotka%e2%80%93Volterra_equations&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Lotka Volterra equations&lt;/a&gt;) and morphogenesis (&lt;a href=&#34;https://en.wikipedia.org/wiki/Turing_pattern&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Turing patterns&lt;/a&gt;)&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Such models can be used to &lt;strong&gt;forecast the state of the system in the future&lt;/strong&gt;, or can be used in the sense of &lt;strong&gt;virtual laboratories&lt;/strong&gt;. In both cases, one of the requirement is that they &lt;strong&gt;reproduce patterns&lt;/strong&gt; - at least at a qualitative level. To do so, the modeler needs to find the true parameter combination $\theta$ that correspond to the system under consideration. And this is tricky! In this post we adress this challenge.&lt;/p&gt;
+&lt;h2 id=&#34;model-calibration&#34;&gt;Model calibration&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;How to determine $\theta$ so that $\text{simulations} \approx \text{empirical data}$?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The best way to do that is to design an experiment!&lt;/p&gt;
+&lt;iframe src=&#34;https://giphy.com/embed/0DYipdNqJ5n4GYATKL&#34; width=&#34;480&#34; height=&#34;360&#34; frameBorder=&#34;0&#34; class=&#34;giphy-embed&#34; allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href=&#34;https://giphy.com/gifs/BTTF-back-to-the-future-bttf-one-0DYipdNqJ5n4GYATKL&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;When possible, measuring directly the parameters in a controlled experiment with e.g. physical devices is a great approach. This is a very powerful scientific method, used e.g. in &lt;a href=&#34;https://en.wikipedia.org/wiki/General_circulation_model&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;global circulation models&lt;/a&gt; where scientists can measure the water viscosity, the change in water density with respect to temperature, etc&amp;hellip; Unfortunately, such direct methods are often not possible considering other systems.&lt;/p&gt;
+&lt;p&gt;An opposite approach, known as inverse modelling, is to infer the parameters undirectly with the empirical data available.&lt;/p&gt;
+&lt;h3 id=&#34;parameter-exploration&#34;&gt;Parameter exploration&lt;/h3&gt;
+&lt;p&gt;One way to find right parameters is to perform parameter exploration, that is, slicing the parameter space and running the model for all parameter combinations chosen. Comparing the simulation results to the empirical data available, one can elect the combination with the higher explanatory power.&lt;/p&gt;
+&lt;p&gt;But as the parameter space becomes larger (higher number of parameters) this becomes tricky. Such problem is often refered to as the &lt;a href=&#34;https://en.wikipedia.org/wiki/Curse_of_dimensionality&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;curse of dimensionality&lt;/a&gt;. Feels very much like being lost in a giant maze. We need more clever technique to get out!&lt;/p&gt;
+&lt;h3 id=&#34;a-machine-learning-problem&#34;&gt;A Machine Learning problem&lt;/h3&gt;
+&lt;p&gt;In machine learning, people try to predict a variable $y$ from predictors $x$ by finding suitable parameters $\theta$ of a parametric function $F_\theta$ so that&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+y = F_\theta(x)
+\end{equation}\tag{3}
+$$&lt;/p&gt;
+&lt;p&gt;For example, in computer vision, this function might be designed for the specific task of labelling images, such as for instance&lt;/p&gt;
+&lt;p&gt;$F_\theta ($
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_c90526d6725adf39222179690a5142ca.webp 400w,
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_46663fad0d99480319290c55595ab2b7.webp 760w,
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_c90526d6725adf39222179690a5142ca.webp&#34;
+               width=&#34;300&#34;
+               height=&#34;168&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+$) \to \{\text{cat}, \text{dog}\}$&lt;/p&gt;
+&lt;p&gt;Usually people use neural networks so that $F_\theta \equiv NN_\theta$, as they are good approximators for high dimensional function (see the &lt;a href=&#34;https://en.wikipedia.org/wiki/Universal_approximation_theorem&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Universal approximation theorem&lt;/a&gt;). One should really see neural networks as functions ! For example, feed forward neural networks are mathematically described by a series of matrix multiplications and nonlinear operations, i.e. $NN_\theta (x) = \sigma_1 \circ f_1 \circ  \dots \circ \sigma_n \circ f_n(x)$
+where $\sigma_i$ is an activation function and $f_i$ is linear function
+$$
+\begin{equation*}
+f_i (x) = A_i x + b_i .
+\end{equation*}
+$$
+&lt;strong&gt;Notice that Eq. (2) is similar to Eq. (3)&lt;/strong&gt;! Indeed one can think of $🌍_0$ as the analogous to $x$ - i.e. the predictor - and $🌍_t$ as the variable $y$ to predict:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation*}
+🌍_t = F_\theta(🌍_{t_0})
+\end{equation*}
+$$&lt;/p&gt;
+&lt;p&gt;where $$F_\theta (🌍_{t_0}) \equiv 🌍_{t_0} + \int_0^t f_\theta( 🌍_s ) ds .$$&lt;/p&gt;
+&lt;p&gt;With this perspective in mind, techniques developed within the field of Machine Learning - to find suitable parameters $\theta$ that best predict $y$ - become readily available to reach our specific needs: model calibration!&lt;/p&gt;
+&lt;h2 id=&#34;parameter-inference&#34;&gt;Parameter inference&lt;/h2&gt;
+&lt;p&gt;The general strategy to find a suitable neural network that can perform the tasks required is to &amp;ldquo;train&amp;rdquo; it, that is, to find the parameters $\theta$ so that its predictions are accurate.&lt;/p&gt;
+&lt;p&gt;In order to train it, one &amp;ldquo;scores&amp;rdquo; how good a combination of parameter $\theta$ performs. A way to do so is to introduce a &amp;ldquo;&lt;strong&gt;Loss function&lt;/strong&gt;&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation*}
+L(\theta) = (F_\theta(x) - y_{\text{empirical}})^2
+\end{equation*}
+$$&lt;/p&gt;
+&lt;p&gt;One can then use an optimisation method to find a local minima (and in the best scenario, the global minima) for $L$.&lt;/p&gt;
+&lt;h3 id=&#34;gradient-descent&#34;&gt;Gradient descent&lt;/h3&gt;
+&lt;p&gt;You ready?&lt;/p&gt;
+&lt;iframe src=&#34;https://giphy.com/embed/l2Je5HLxfeuppOkuc&#34; width=&#34;480&#34; height=&#34;270&#34; frameBorder=&#34;0&#34; class=&#34;giphy-embed&#34; allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href=&#34;https://giphy.com/gifs/toferra-ski-skiing-into-the-mind-l2Je5HLxfeuppOkuc&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Gradient descent and stochastic gradient descent are &amp;ldquo;iterative optimisation methods that seek to find a local minimum of a differentiable function&amp;rdquo; (&lt;a href=&#34;https://en.wikipedia.org/wiki/Gradient_descent&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Wikipedia&lt;/a&gt;). Such methods have become widely used with the development of artifical intelligence.&lt;/p&gt;
+&lt;p&gt;Those methods are used to compute iteratively $\theta$ using the sensitivity of the loss function to changes in $\theta$, denoted by $\partial_\theta L(\theta)$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation*}
+\theta^{i+1} = \theta^{(i)} - \lambda \partial_\theta L(\theta)
+\end{equation*}
+$$&lt;/p&gt;
+&lt;p&gt;where $\lambda$ is called the learning rate.&lt;/p&gt;
+&lt;h2 id=&#34;in-practice&#34;&gt;In practice&lt;/h2&gt;
+&lt;p&gt;The sensitivity with respect to the parameters $\partial_\theta L(\theta)$ is in practice obtained by differentiating the code (&lt;a href=&#34;https://en.wikipedia.org/wiki/Automatic_differentiation&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Automatic Differentiation&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;For some programming languages this can be done automatically, with low computational cost. In particular, &lt;a href=&#34;https://github.com/FluxML/Flux.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Flux.jl&lt;/a&gt; allows to efficiently obtain the gradient of any function written in the wonderful language &lt;a href=&#34;https://julialang.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The library &lt;a href=&#34;https://github.com/SciML/DiffEqFlux.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DiffEqFlux.jl&lt;/a&gt; based on &lt;a href=&#34;https://github.com/FluxML/Flux.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Flux.jl&lt;/a&gt; implements differentiation rules (&lt;a href=&#34;https://juliadiff.org/ChainRulesCore.jl/stable/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;custom adjoints&lt;/a&gt;) to obtain even more efficiently the sensitivity of a loss function that depends on the numerical solution of a differential equation. That is, &lt;a href=&#34;https://github.com/SciML/DiffEqFlux.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DiffEqFlux.jl&lt;/a&gt; precisely allows to do parameter inference in dynamical systems. Go and check it out!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

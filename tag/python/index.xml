@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python | Victor Boussange</title>
+    <link>https://vboussange.github.io/tag/python/</link>
+      <atom:link href="https://vboussange.github.io/tag/python/index.xml" rel="self" type="application/rss+xml" />
+    <description>python</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 11 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>python</title>
+      <link>https://vboussange.github.io/tag/python/</link>
+    </image>
+    
+    <item>
+      <title>A multi-language overview on how to document your research project code</title>
+      <link>https://vboussange.github.io/post/documenting-your-research-code/</link>
+      <pubDate>Tue, 11 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/documenting-your-research-code/</guid>
+      <description>&lt;p&gt;Documentation serves multiple purposes and may be useful for various audiences, including your future self, collaborators, users and contributors - should you aim at packaging some of your code into a general-purpose library.&lt;/p&gt;
+&lt;p&gt;This post is part of a series of posts on best practices for managing research project code. Much of this material was developed in collaboration with &lt;a href=&#34;https://github.com/mauro3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Mauro Werder&lt;/a&gt; as part of the &lt;a href=&#34;https://github.com/mauro3/CORDS/tree/master&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Course On Reproducible Research, Data Pipelines, and Scientific Computing (CORDS)&lt;/a&gt;. If you have experiences to share or spot any errors, please reach out!&lt;/p&gt;
+&lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#content&#34;&gt;Content&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#style-guides&#34;&gt;Style guides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comments&#34;&gt;Comments&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#literal-documentation&#34;&gt;Literal documentation&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readme&#34;&gt;README&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#api-documentation--doc-strings&#34;&gt;API documentation / doc strings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#type-annotations&#34;&gt;Type annotations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#consider-raising-errors&#34;&gt;Consider raising errors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tutorials&#34;&gt;Tutorials&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#accessing-documentation&#34;&gt;Accessing documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#doc-testing&#34;&gt;Doc testing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#useful-packages-to-help-you-write-and-lint-your-documentation&#34;&gt;Useful packages to help you write and lint your documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#more-resources&#34;&gt;More resources&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#take-home-messages&#34;&gt;Take home messages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;style-guides&#34;&gt;Style guides&lt;/h3&gt;
+&lt;p&gt;The best documentation starts by writing self-explanatory code with good conventions.&lt;/p&gt;
+&lt;p&gt;Correctly naming your variables enhances code clarity.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There are only two hard things in Computer Science: cache invalidation and naming things.
+&lt;em&gt;Martin Fowler&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Instead of using generic names like &lt;code&gt;l&lt;/code&gt; for a list:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for l in L:
+    pass
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Use descriptive names like&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for line in lines:
+    pass
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using style guides for your chosen language ensures consistency and readability in your code. Here are some resources:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.julialang.org/en/v1/manual/style-guide/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia style guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://google.github.io/styleguide/pyguide.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google python style guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Do not hesitate to refactor your code regularly and remove dead code to prevent confusion for yourself and others.&lt;/p&gt;
+&lt;h3 id=&#34;comments&#34;&gt;Comments&lt;/h3&gt;
+&lt;p&gt;In-line comments should be used sparingly. Aim to write self-explanatory code instead. Use comments to provide context not apparent from the code itself, such as references to papers, Stack Overflow topics, or TODOs.&lt;/p&gt;
+&lt;p&gt;Use single-line comments for brief explanations and multi-line comments for more detailed information.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;julia&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;#=
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;This is a multi-line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;comment
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;=#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;python&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;This is a multi-line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;comment
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Tip: use vscode &lt;code&gt;rewrap comment/text&lt;/code&gt; to nicely format multiline comments.&lt;/p&gt;
+&lt;p&gt;On top of nicely formatting your code and appending comments where necessary, a literal documentation greatly facilitates the maintenance, understandability and reproducibility of your code.&lt;/p&gt;
+&lt;h3 id=&#34;literal-documentation&#34;&gt;Literal documentation&lt;/h3&gt;
+&lt;p&gt;Literal documentation helps users understand your tool and get started with it.&lt;/p&gt;
+&lt;h4 id=&#34;readme&#34;&gt;README&lt;/h4&gt;
+&lt;p&gt;A README file is essential for any research repository. It is displayed on under the code structure when accessing a GitHub repo.
+It should contain:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;(Badges showing tests, and a nice logo)&lt;/li&gt;
+&lt;li&gt;A one-sentence description of your project&lt;/li&gt;
+&lt;li&gt;A longer description&lt;/li&gt;
+&lt;li&gt;An overview of the repository structure and files&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;Getting started&lt;/em&gt; or &lt;em&gt;Examples&lt;/em&gt; section&lt;/li&gt;
+&lt;li&gt;An &lt;em&gt;Installation&lt;/em&gt; section with dependencies&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;Citation&lt;/em&gt;/&lt;em&gt;Reference&lt;/em&gt; section&lt;/li&gt;
+&lt;li&gt;(A link to the documentation)&lt;/li&gt;
+&lt;li&gt;(A &lt;em&gt;How to contribute&lt;/em&gt; section)&lt;/li&gt;
+&lt;li&gt;An &lt;em&gt;Acknowledgement&lt;/em&gt; section&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;License&lt;/em&gt; section&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some examples:&lt;/p&gt;
+&lt;!-- - [HighDimPDE.jl](https://github.com/SciML/HighDimPDE.jl)
+- [Code for HighDimPDE paper](https://github.com/SciML/HighDimPDE.jl)
+- [Code for PiecewiseInference paper](https://github.com/vboussange/partitioning-time-series) --&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/microsoft/satclip&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SatClip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/google-deepmind/graphcast&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GraphCast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/google-deepmind/alphafold&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Alphafold&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;api-documentation--doc-strings&#34;&gt;API documentation / doc strings&lt;/h4&gt;
+&lt;p&gt;API documentation describes the usage of functions, classes (types) and modules (packages). Parsers usually support markdown styles, which also enhances raw readability for humans. In short, markdown styles consists in using&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;backticks &lt;code&gt;`&lt;/code&gt; for variable names&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;#&lt;/code&gt; for titles,&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/carpentries-incubator/markdown-intro&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;See here for an introduction to markdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Doc strings in python live inside the function&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;best_function_ever&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a_param&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;another_parameter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    this is the docstring
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;# do some stuff&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But above the function or type definition in Julia&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;this is the docstring
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;best_function_ever&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a_param&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;another_parameter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# do some stuff&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Tell whether there are too foo items in the array.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Best practice for docstrings include&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;(in Julia: insert the signature of your function )&lt;/li&gt;
+&lt;li&gt;Short description&lt;/li&gt;
+&lt;li&gt;Arguments (Args, Input,&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Returns&lt;/li&gt;
+&lt;li&gt;Examples&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Several flavours may be used, even for a single language.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;python&lt;/strong&gt;
+3 Different documentation style flavours&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;reST (reStructuredText)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google style&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Numpy style&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Google style is easier to read for humans&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    Add two integers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    This function takes two integer arguments and returns their sum.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    # Parameters:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    a: The first integer to be added.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    b: The second integer to be added.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    # Return:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    int: The sum of the two integers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    # Raise:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    TypeError: If either of the arguments is not an integer.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    Examples:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;gt;&amp;gt;&amp;gt; add(2, 3)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    5
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;gt;&amp;gt;&amp;gt; add(-1, 1)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;gt;&amp;gt;&amp;gt; add(&amp;#39;a&amp;#39;, 1)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    Traceback (most recent call last):
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;        ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    TypeError: Both arguments must be integers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;isinstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;isinstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;TypeError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Both arguments must be integers&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;julia&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;    add(a, b)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;Adds two integers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;This function takes two integer arguments and returns their sum.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;# Arguments
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;- `a`: The first integer to be added.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;- `b`: The second integer to be added.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;# Returns
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;- The sum of the two integers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;# Examples
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;```julia-repl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;julia&amp;gt; add(2, 3)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;5
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;julia&amp;gt; add(-1, 1)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;```
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You may use tools like &lt;a href=&#34;&#34;&gt;&lt;code&gt;Documenter.jl&lt;/code&gt;&lt;/a&gt; or &lt;a href=&#34;https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;Sphinx&lt;/code&gt;&lt;/a&gt; to automatically render your API documentation on a website. Github actions can automatize the process of building the documentation for you, similarly to how it can automate testing.&lt;/p&gt;
+&lt;p&gt;Docstrings may be accompanied by typing.&lt;/p&gt;
+&lt;h4 id=&#34;type-annotations&#34;&gt;Type annotations&lt;/h4&gt;
+&lt;p&gt;Typing refers to the specification of variable types and function return types within a programming language. It helps define what kind of data a function or variable can handle, ensuring type safety and reducing runtime errors. It&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;clearly indicates the expected input and output types, making the code easier to understand.&lt;/li&gt;
+&lt;li&gt;helps catch type-related errors early in the development process.&lt;/li&gt;
+&lt;li&gt;encourages consistent usage of types throughout the codebase.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;python&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In Python, using typing does not enforce type checking at runtime! You may use decorators to enforce it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;julia&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In Julia, types are enforced at runtime! Type annotations help the Julia compiler optimize performance by making type inferences easier.&lt;/p&gt;
+&lt;h4 id=&#34;consider-raising-errors&#34;&gt;Consider raising errors&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;We do not like reading manuals. But we are foreced to read error messages. Use assertions and error messages to handle unexpected inputs and guide users.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;python&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;assert&lt;/code&gt;: When an assert doesn’t pass, it raises an AssertionError. You can optionally add an error message at the end.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;NotImplementedError&lt;/code&gt;, &lt;code&gt;ValueError&lt;/code&gt;, &lt;code&gt;NameError&lt;/code&gt;: Commonly used, generic errors you can raise. I probably overuse &lt;code&gt;NotImplementedError&lt;/code&gt; compared to other types.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;convolve_vectors&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vec1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vec2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;isinstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vec1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;isinstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vec2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;ValueError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Both inputs must be lists.&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;# convolve the vectors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;tutorials&#34;&gt;Tutorials&lt;/h4&gt;
+&lt;p&gt;Create tutorial Jupyter notebooks or vignettes in R to demonstrate the usage of your code. Those can be placed in a folder &lt;code&gt;examples&lt;/code&gt; or &lt;code&gt;tutorials&lt;/code&gt;. Format them as e.g.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vignettes in R,&lt;/li&gt;
+&lt;li&gt;or using Jupyter notebooks, which are the perfect format for tutorials&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;accessing-documentation&#34;&gt;Accessing documentation&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;julia&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;nd&#34;&gt;@time&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;sa&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;sr&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;python&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;help&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;myfun&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But e.g. VSCode can be also quite helpful, and this works also with your own code!&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /post/documenting-your-research-code/figures/hover_doc_hue5248cd512781ef3756192bdda7faf1a_134874_76ec06524fcce10c0f16204c1bae71b0.webp 400w,
+               /post/documenting-your-research-code/figures/hover_doc_hue5248cd512781ef3756192bdda7faf1a_134874_6061565650d9d825bd665837e8145a7e.webp 760w,
+               /post/documenting-your-research-code/figures/hover_doc_hue5248cd512781ef3756192bdda7faf1a_134874_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/post/documenting-your-research-code/figures/hover_doc_hue5248cd512781ef3756192bdda7faf1a_134874_76ec06524fcce10c0f16204c1bae71b0.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;281&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h3 id=&#34;doc-testing&#34;&gt;Doc testing&lt;/h3&gt;
+&lt;p&gt;Doc testing, or doctest, allows you to test your code by running examples embedded in the documentation (docstrings). It compares the output of the examples with the expected results given in the docstrings, ensuring the code works as documented.&lt;/p&gt;
+&lt;p&gt;Why doc testing?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ensures that the code examples in your documentation are accurate and up-to-date.&lt;/li&gt;
+&lt;li&gt;Simple to write and understand, making it accessible for both writing and reading tests.&lt;/li&gt;
+&lt;li&gt;Promotes writing comprehensive docstrings which enhance code readability and maintainability.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    Adds two numbers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;gt;&amp;gt;&amp;gt; add(2, 3)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    5
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;gt;&amp;gt;&amp;gt; add(-1, 1)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To run the test:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;python -m doctest your_module.py
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or from within a script&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;doctest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;doctest&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;testmod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;julia&lt;/strong&gt;
+Available through &lt;code&gt;Documenter.jl&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;Adds two numbers.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;```jldoctest
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;julia&amp;gt; add(2, 3)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;5
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;julia&amp;gt; add(-1, 1)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;```
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;useful-packages-to-help-you-write-and-lint-your-documentation&#34;&gt;Useful packages to help you write and lint your documentation&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Better Comments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /post/documenting-your-research-code/figures/bettercomments_hue8d71157385fa06c441962f01b246252_98866_aa3af5f002621707c5158a2f1e26e303.webp 400w,
+               /post/documenting-your-research-code/figures/bettercomments_hue8d71157385fa06c441962f01b246252_98866_07a116dc3aa99ed2567f79e7697020cb.webp 760w,
+               /post/documenting-your-research-code/figures/bettercomments_hue8d71157385fa06c441962f01b246252_98866_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/post/documenting-your-research-code/figures/bettercomments_hue8d71157385fa06c441962f01b246252_98866_aa3af5f002621707c5158a2f1e26e303.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;544&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;Automatic doc string generation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /post/documenting-your-research-code/figures/autodocstring_hua804b0c52ef1ab401e5e02b31f5ca79b_125033_61e87bdfae0bd5a33fcb138c38dfd62b.webp 400w,
+               /post/documenting-your-research-code/figures/autodocstring_hua804b0c52ef1ab401e5e02b31f5ca79b_125033_403c51a21759d5cc74ab93df35bd69e5.webp 760w,
+               /post/documenting-your-research-code/figures/autodocstring_hua804b0c52ef1ab401e5e02b31f5ca79b_125033_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/post/documenting-your-research-code/figures/autodocstring_hua804b0c52ef1ab401e5e02b31f5ca79b_125033_61e87bdfae0bd5a33fcb138c38dfd62b.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;532&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;Python test explorer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /post/documenting-your-research-code/figures/pythontest_hu5db1f42aa0e77083c56b38ab5823f0c6_102106_ad4bfb4c17ac2034c832e694e2afd772.webp 400w,
+               /post/documenting-your-research-code/figures/pythontest_hu5db1f42aa0e77083c56b38ab5823f0c6_102106_552e2d65b4d7411fd6d930b81b8d61e7.webp 760w,
+               /post/documenting-your-research-code/figures/pythontest_hu5db1f42aa0e77083c56b38ab5823f0c6_102106_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/post/documenting-your-research-code/figures/pythontest_hu5db1f42aa0e77083c56b38ab5823f0c6_102106_ad4bfb4c17ac2034c832e694e2afd772.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;549&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;more-resources&#34;&gt;More resources&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.julialang.org/en/v1/manual/documentation/#Writing-Documentation&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia documentation recommendations&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://goodresearch.dev/docs&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Good research tutorial on documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://carpentries-incubator.github.io/python-packaging-publishing/05-documentation-types-roles/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Carpentries incubator on packaging and publish python - type roles&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://carpentries-incubator.github.io/python-packaging-publishing/06-documentation-in-code/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Carpentries incubator on packaging and publish python - documentation in code&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;take-home-messages&#34;&gt;Take home messages&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Good documentation helps maintain the long-term memory of a project.&lt;/li&gt;
+&lt;li&gt;Refactor code to reduce complexity instead of documenting tricky code.&lt;/li&gt;
+&lt;li&gt;Writing unit tests is often more productive than extensive documentation.&lt;/li&gt;
+&lt;li&gt;Types of documentation include literal, API, and tutorial/example documentation.&lt;/li&gt;
+&lt;li&gt;Literal documentation explains the big picture and setup.&lt;/li&gt;
+&lt;li&gt;API documentation lives in docstrings and explains function usage.&lt;/li&gt;
+&lt;li&gt;Examples connect the details to common tasks.&lt;/li&gt;
+&lt;li&gt;Consider using tools like ChatGPT to assist with documenting your functions.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A multi-language overview on how to handle dependencies within a research project</title>
+      <link>https://vboussange.github.io/post/research-project-dependencies/</link>
+      <pubDate>Tue, 11 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/research-project-dependencies/</guid>
+      <description>&lt;p&gt;Your future self and others should be able to recreate the minimal environment to run the scripts in your research project. This is best achieved using &lt;strong&gt;package managers&lt;/strong&gt;  and &lt;strong&gt;virtual environments&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This post is part of a series of posts on best practices for managing research project code. Much of this material was developed in collaboration with &lt;a href=&#34;https://github.com/mauro3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Mauro Werder&lt;/a&gt; as part of the &lt;a href=&#34;https://github.com/mauro3/CORDS/tree/master&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Course On Reproducible Research, Data Pipelines, and Scientific Computing (CORDS)&lt;/a&gt;. If you have experiences to share or spot any errors, please reach out!&lt;/p&gt;
+&lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#content&#34;&gt;Content&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#some-definitions&#34;&gt;Some definitions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#what-is-a-dependency&#34;&gt;What is a dependency?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#what-is-a-package-manager&#34;&gt;What is a package manager?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#what-is-a-virtual-environment&#34;&gt;What is a virtual environment?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#package-managers&#34;&gt;Package managers&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#multilanguage-overview&#34;&gt;Multilanguage overview&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#conda&#34;&gt;&lt;code&gt;conda&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#renv&#34;&gt;&lt;code&gt;renv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#pkg&#34;&gt;&lt;code&gt;Pkg&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#environment-files&#34;&gt;Environment files&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#julia&#34;&gt;Julia&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#python&#34;&gt;Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#r&#34;&gt;R&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#working-with-interactive-environments&#34;&gt;Working with interactive environments&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#caveats-of-virtual-environments&#34;&gt;Caveats of virtual environments&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#advanced-topic-package-development&#34;&gt;Advanced topic: package development&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#take-home-messages&#34;&gt;Take-home messages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;some-definitions&#34;&gt;Some definitions&lt;/h2&gt;
+&lt;h3 id=&#34;what-is-a-dependency&#34;&gt;What is a dependency?&lt;/h3&gt;
+&lt;p&gt;A &lt;strong&gt;dependency&lt;/strong&gt;  is an external package that a project requires to run.&lt;/p&gt;
+&lt;h3 id=&#34;what-is-a-package-manager&#34;&gt;What is a package manager?&lt;/h3&gt;
+&lt;p&gt;A &lt;strong&gt;package manager&lt;/strong&gt; like &lt;code&gt;conda&lt;/code&gt;, &lt;code&gt;Pkg&lt;/code&gt; or &lt;code&gt;renv&lt;/code&gt; &lt;strong&gt;automates the process of installing, upgrading, configuring, and managing dependencies&lt;/strong&gt;. It usually relies on a &lt;strong&gt;package repository&lt;/strong&gt;, which is a central location that stores in one place the source code of packages or where to find it.&lt;/p&gt;
+&lt;h3 id=&#34;what-is-a-virtual-environment&#34;&gt;What is a virtual environment?&lt;/h3&gt;
+&lt;p&gt;A &lt;strong&gt;virtual environment&lt;/strong&gt; is an isolated environment where you can install and manage dependencies separately from the system-wide installation. This isolation ensures that different projects can have different dependencies and versions of packages without causing conflicts. Why use a virtual environment?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;For yourself, to best deal with multiple projects and to prevent your code from breaking down overtime.
+&lt;ul&gt;
+&lt;li&gt;Without specifying a virtual environment, you install packages in your base environment, which is shared across all your projects.&lt;/li&gt;
+&lt;li&gt;Imagine you are working with Project A and Project B, which both depend on Package1 (currently @v1.1).&lt;/li&gt;
+&lt;li&gt;You leave aside Project A for a few months, and focus on Project B.&lt;/li&gt;
+&lt;li&gt;A new feature in Package1 motivate you to upgrade to v1.2, which modifies the API or the behavior of one function used in both projects.&lt;/li&gt;
+&lt;li&gt;You then want to come back to Project A, but now everything is broken! Because your code has been formatted to work with &lt;a href=&#34;mailto:Package1@v1.1&#34;&gt;Package1@v1.1&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Hence, you want to make sure to compartmentalize environments.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;To share your environment with others individuals and machines.
+&lt;ul&gt;
+&lt;li&gt;A virtual environement tracks the minimum dependencies, which can easily be shared and installed on other machines (e.g., a HPC).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;package-managers&#34;&gt;Package managers&lt;/h2&gt;
+&lt;h3 id=&#34;multilanguage-overview&#34;&gt;Multilanguage overview&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Python&lt;/th&gt;
+&lt;th&gt;R&lt;/th&gt;
+&lt;th&gt;Julia&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Package Manager&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;pip&lt;/code&gt;, &lt;code&gt;conda&lt;/code&gt; (see also &lt;code&gt;mamba&lt;/code&gt;), &lt;code&gt;poetry&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;install.packages()&lt;/code&gt; (base R)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Pkg&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Package Repository&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;PyPI (Python Package Index), &lt;code&gt;conda-forge&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;CRAN (Comprehensive R Archive Network)&lt;/td&gt;
+&lt;td&gt;General registry&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Distribution Format&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;.whl&lt;/code&gt; (wheel, incl binaries) or &lt;code&gt;tar.gz&lt;/code&gt; (source)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;.tar.gz&lt;/code&gt; (source and/or binary)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Pkg&lt;/code&gt; will git clone from source, and download (binary) artifacts&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Virtual Environment&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;venv&lt;/code&gt;, &lt;code&gt;virtualenv&lt;/code&gt;, &lt;code&gt;conda env&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;renv&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Built-in in the &lt;code&gt;Pkg&lt;/code&gt; module&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Dependency Management&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;requirements.txt&lt;/code&gt; or &lt;code&gt;Pipfile&lt;/code&gt; (&lt;code&gt;pip&lt;/code&gt;), or &lt;code&gt;environment.yml&lt;/code&gt; (&lt;code&gt;conda env&lt;/code&gt;) or &lt;code&gt;pyproject.toml&lt;/code&gt; (&lt;code&gt;poetry&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;DESCRIPTION&lt;/code&gt;, &lt;code&gt;NAMESPACE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Project.toml&lt;/code&gt;, &lt;code&gt;Manifest.toml&lt;/code&gt;, &lt;code&gt;Artifacts.toml&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This table is very much inspired by &lt;a href=&#34;https://scientificcoder.com/comparing-package-management-in-python-r-julia-and-rust&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;The Scientific Coder article&lt;/a&gt; on package managers.&lt;/p&gt;
+&lt;p&gt;Julia or R have built-in package managers which can be called within the REPL but Python package managers are called from outside the language.&lt;/p&gt;
+&lt;h4 id=&#34;conda&#34;&gt;&lt;code&gt;conda&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;conda&lt;/code&gt; is a very appropriate package manager for scientific projects in Python. Over its older concurrent &lt;code&gt;pip&lt;/code&gt;, it can handle python versions and all sorts non-python dependencies artifacts. With two lines of code, it allows someone to quickly install the virtual environment, without any pre-requiste python installation.&lt;/p&gt;
+&lt;p&gt;Here are some essential &lt;code&gt;conda&lt;/code&gt; commands.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda create --name myenv &lt;span class=&#34;c1&#34;&gt;# creates new virtual environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda activate myenv &lt;span class=&#34;c1&#34;&gt;# activate the environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install numpy -c conda-forge &lt;span class=&#34;c1&#34;&gt;# install a package&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda deactivate
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note that not using &lt;code&gt;-c conda-forge&lt;/code&gt; will do just fine, but what is it? &lt;code&gt;conda-forge&lt;/code&gt; is a community-driven &lt;strong&gt;channel&lt;/strong&gt; (repository in the python jargon) that often has more up-to-date packages and a broader selection than the default Anaconda repository. You should use for several reasons, but mostly because &lt;code&gt;conda-forge&lt;/code&gt; generally has the largest volume of packages and the most up-to-date versions&lt;/p&gt;
+&lt;p&gt;Note that some packages are only available through PyPi (&lt;code&gt;pip&lt;/code&gt;). But you are covered for that: You can install &lt;code&gt;pip&lt;/code&gt; packages within a &lt;code&gt;conda env&lt;/code&gt;, by first activating the &lt;code&gt;conda env&lt;/code&gt; and then normally using &lt;code&gt;pip&lt;/code&gt;. &lt;code&gt;pip&lt;/code&gt; should be part of your dependencies though. Always try to install packages using &lt;code&gt;conda&lt;/code&gt; first.&lt;/p&gt;
+&lt;p&gt;We highly recommend using &lt;a href=&#34;https://mamba.readthedocs.io/en/latest/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;mamba&lt;/code&gt;&lt;/a&gt; as a drop-in replacement for &lt;code&gt;conda&lt;/code&gt;, for much faster use.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Some useful resources&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://earth-env-data-science.github.io/lectures/environment/python_environments.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;A good resource for better understanding difference between &lt;code&gt;mamba&lt;/code&gt; and &lt;code&gt;conda&lt;/code&gt;, and their lightweights alternatives&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/04-sharing-environments/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Advanced tutorial on using &lt;code&gt;conda&lt;/code&gt; environments for a scientific project&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://medium.com/i-want-to-be-the-very-best/installing-packages-from-github-with-conda-commands-ebf10de396f4&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tutorial on how to install a package directly from github repository&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;renv&#34;&gt;&lt;code&gt;renv&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;Here are some basics on how to use &lt;code&gt;renv&lt;/code&gt;, but see the &lt;a href=&#34;https://rstudio.github.io/renv/articles/renv.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;renv vignette&lt;/a&gt; and documentation for more advanced usage.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Initialize renv in your project&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;renv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;project&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;path/to/environment&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Install a package and snapshot the environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nf&#34;&gt;install.packages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dplyr&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;renv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;snapshot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Load the renv environment for the project&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;renv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;activate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Restore the project&amp;#39;s dependencies&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;renv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;restore&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;renv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;update&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;renv::history()
+renv::revert()
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;pkg&#34;&gt;&lt;code&gt;Pkg&lt;/code&gt;&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;using&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Pkg&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Create a new project environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Pkg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;path/to/MyProject&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Add packages to the project environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Pkg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;DataFrames&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You can also use the Julia REPL by typing &lt;code&gt;]&lt;/code&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(@v1.10) pkg&amp;gt; add DataFrames
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or string macros &lt;code&gt;pkg&amp;quot;add DataFrames&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Not that in Julia, the global shared environment is inherited in custom environment. This can be useful!
+It is a good idea to install utility packages that you will use for development but that are not mandatory to run your code in the global environment. For instance, the macro &lt;code&gt;@btime&lt;/code&gt; from &lt;code&gt;BenchmarkTools&lt;/code&gt; is very handy to profile code. But you may not want to have &lt;code&gt;BenchmarkTools&lt;/code&gt; in your dependencies. Just install it in base, and then you will be able to call
+&lt;code&gt;julia  using BenchmarkTools &lt;/code&gt;
+within your custom environment.
+Other utility packages to consider having in your global environments are&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Test&lt;/code&gt;,&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/JuliaTesting/TestEnv.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;TestEnv&lt;/code&gt;&lt;/a&gt;,&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Revise&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LocalRegistry&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;environment-files&#34;&gt;Environment files&lt;/h3&gt;
+&lt;p&gt;Environment files specify the exact versions of the dependencies in your virtual environment, and are used by package managers to instantiate the environment. They are usually &lt;code&gt;.txt&lt;/code&gt;, &lt;code&gt;.toml&lt;/code&gt; or &lt;code&gt;.yml&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;Always version control your environment files!&lt;/p&gt;
+&lt;h4 id=&#34;julia&#34;&gt;Julia&lt;/h4&gt;
+&lt;p&gt;In Julia, the environment is defined using two files: the &lt;code&gt;Project.toml&lt;/code&gt; and &lt;code&gt;Manifest.toml&lt;/code&gt;. The &lt;code&gt;Project.toml&lt;/code&gt; file lists the direct dependencies, while the &lt;code&gt;Manifest.toml&lt;/code&gt; file captures the full dependency graph, including all transitive dependencies. The &lt;code&gt;Manifest.toml&lt;/code&gt; file may not be tracked in a project, and will be reconstructed if missing. It specifies the exact version of the environment. For reproducibility, you want to include &lt;code&gt;Manifest.toml&lt;/code&gt; in your git repo.
+&lt;code&gt;Artifacts.toml&lt;/code&gt; is used to handle non-Julia package dependencies.&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;Project.toml example&lt;/summary&gt;
+&lt;pre&gt;&lt;code&gt;
+authors = [&#34;Some One &lt;someone@email.com&gt;&#34;,
+           &#34;Foo Bar &lt;foo@bar.com&gt;&#34;]
+name = &#34;MyEnv&#34;
+uuid = &#34;7876af07-990d-54b4-ab0e-23690620f79a&#34; # mandatory for packages
+version = &#34;1.2.5&#34;
+&lt;p&gt;[deps]
+DataFrames = &amp;ldquo;7876af07-990d-54b4-ab0e-23690620f79a&amp;rdquo;
+Plots = &amp;ldquo;8dfed614-e22c-5e08-85e1-65c5234f0b40&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;[compat]
+CUDA = &amp;ldquo;4.4, 5&amp;rdquo;
+julia = &amp;ldquo;1.10&amp;rdquo;
+&lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;p&gt;When you are located within the project root folder containing the &lt;code&gt;.toml&lt;/code&gt; file, start julia with&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ julia --project&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will load the environment. If it is the first time that you use it, you need to instantiate it with&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-julia-repl&#34; data-lang=&#34;julia-repl&#34;&gt;(Example) pkg&amp;gt; instantiate
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Some useful resources&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://pkgdocs.julialang.org/v1/toml-files/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;see here for more info on Julia &lt;code&gt;.toml&lt;/code&gt; files here&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;python&#34;&gt;Python&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;conda env&lt;/code&gt; reads &lt;code&gt;.yml&lt;/code&gt;, which can take any names. &lt;code&gt;.yml&lt;/code&gt; files are not created automatically! Create &lt;code&gt;environment.yml&lt;/code&gt; with&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda env &lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; --name machine-learning-env --from-history --file environment.yml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This creates an &lt;code&gt;environment.yml&lt;/code&gt; file&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;environment.yml example&lt;/summary&gt;
+&lt;pre&gt;&lt;code&gt;
+name: machine-learning-env
+&lt;p&gt;channels:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pytorch&lt;/li&gt;
+&lt;li&gt;conda-forge&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;dependencies:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pytorch=1.1
+&lt;/pre&gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/details&gt;
+&lt;p&gt;Not using &lt;code&gt;--from-history&lt;/code&gt; will result in listing &lt;strong&gt;all&lt;/strong&gt; dependencies, those installed explicitly AND implicitly. This may be a bit messier.&lt;/p&gt;
+&lt;p&gt;To specify &lt;code&gt;pip&lt;/code&gt; packages, just insert in the &lt;code&gt;.toml&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yml&#34; data-lang=&#34;yml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;pip=19.1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;nt&#34;&gt;pip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;kaggle==1.5&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;yellowbrick==0.9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note the double ‘==’ instead of ‘=’ for the pip installation and that you should include pip itself as a dependency and then a subsection denoting those packages to be installed via pip. Also, note that &lt;code&gt;--from-history&lt;/code&gt; won&amp;rsquo;t catch the pip dependencies. So the best way to proceed is to specify the dependencies by hand.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Installing from &lt;code&gt;environment.yml&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mamba env create --prefix ./.env --file environment.yml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Some additional resources&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://note.nkmk.me/en/python-pip-install-requirements/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Good resource on managing packages with pip&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;r&#34;&gt;R&lt;/h4&gt;
+&lt;p&gt;Environments with &lt;code&gt;renv&lt;/code&gt; are specified in a &lt;code&gt;renv.lock&lt;/code&gt; and &lt;code&gt;DESCRIPTION&lt;/code&gt; files. It is a JSON file that has two main components: R and Packages. The R component specifies the R version used and the list of repositories where packages were installed. The Packages component includes a record for each package used in the project, with all necessary details for reinstalling that exact version. These details are derived from the installed package’s &lt;code&gt;DESCRIPTION&lt;/code&gt; file and cover installations from any source, including CRAN, Bioconductor, GitHub, Gitlab, and Bitbucket. For more information on supported sources, refer to vignette(&amp;ldquo;package-sources&amp;rdquo;).&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;renv.lock&lt;/summary&gt;
+&lt;pre&gt;&lt;code&gt;
+{
+  &#34;R&#34;: {
+    &#34;Version&#34;: &#34;4.3.3&#34;,
+    &#34;Repositories&#34;: [
+      {
+        &#34;Name&#34;: &#34;CRAN&#34;,
+        &#34;URL&#34;: &#34;https://cloud.r-project.org&#34;
+      }
+    ]
+  },
+  &#34;Packages&#34;: {
+    &#34;markdown&#34;: {
+      &#34;Package&#34;: &#34;markdown&#34;,
+      &#34;Version&#34;: &#34;1.0&#34;,
+      &#34;Source&#34;: &#34;Repository&#34;,
+      &#34;Repository&#34;: &#34;CRAN&#34;,
+      &#34;Hash&#34;: &#34;4584a57f565dd7987d59dda3a02cfb41&#34;
+    },
+    &#34;mime&#34;: {
+      &#34;Package&#34;: &#34;mime&#34;,
+      &#34;Version&#34;: &#34;0.12.1&#34;,
+      &#34;Source&#34;: &#34;GitHub&#34;,
+      &#34;RemoteType&#34;: &#34;github&#34;,
+      &#34;RemoteHost&#34;: &#34;api.github.com&#34;,
+      &#34;RemoteUsername&#34;: &#34;yihui&#34;,
+      &#34;RemoteRepo&#34;: &#34;mime&#34;,
+      &#34;RemoteRef&#34;: &#34;main&#34;,
+      &#34;RemoteSha&#34;: &#34;1763e0dcb72fb58d97bab97bb834fc71f1e012bc&#34;,
+      &#34;Requirements&#34;: [
+        &#34;tools&#34;
+      ],
+      &#34;Hash&#34;: &#34;c2772b6269924dad6784aaa1d99dbb86&#34;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;working-with-interactive-environments&#34;&gt;Working with interactive environments&lt;/h3&gt;
+&lt;p&gt;Jupyter notebooks can use &lt;code&gt;Pkg&lt;/code&gt;, &lt;code&gt;conda&lt;/code&gt; and &lt;code&gt;renv&lt;/code&gt; environments, but you may need some extra steps (see how to make Jupyter aware of your Conda environments &lt;a href=&#34;https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/04-sharing-environments/index.html#making-jupyter-aware-of-your-conda-environments&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;there&lt;/a&gt;. You do not need to follow these steps if you are using Visual Studio Code.&lt;/p&gt;
+&lt;p&gt;Other interactive notebooks solutions store directly the environemnts in the files, which is great for reproducibility purposes. This is the case of &lt;code&gt;Pluto&lt;/code&gt; notebooks, which are designed to be reproducible. Under the hood they contain the package environment inside them &lt;code&gt;Binder&lt;/code&gt; notebooks also ship with a virtual environment, but using &lt;code&gt;Docker&lt;/code&gt; (see below and &lt;a href=&#34;https://earth-env-data-science.github.io/lectures/environment/binder.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;a tutorial here&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I personally do not like notebooks, and prefer using scripts in Visual Studio Code, executing them line by line for development with whether the &lt;code&gt;Julia&lt;/code&gt; extension or the Jupyter extension with &lt;code&gt;&amp;quot;jupyter.interactiveWindow.textEditor.executeSelection&amp;quot;: true&lt;/code&gt;. With such an approach, you can specify which virtual environment should be used at login, and never worry again with that later.&lt;/p&gt;
+&lt;h3 id=&#34;caveats-of-virtual-environments&#34;&gt;Caveats of virtual environments&lt;/h3&gt;
+&lt;p&gt;Some packages/libraries rely on system libraries and utilities; for instance &lt;code&gt;pytorch&lt;/code&gt; relies on CUDA drivers, which are specific to a certain machine (&lt;a href=&#34;https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/05-managing-cuda-dependencies/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;see how you can deal with CUDA drivers with &lt;code&gt;conda&lt;/code&gt; here&lt;/a&gt;), or the behavior of the packages my be dependent on system environmental variables. As such, by replicating a virtual environment, you won&amp;rsquo;t necessarily reproduce the same exact computing environment.
+To reproduce more closely a computing environment, &lt;strong&gt;containers&lt;/strong&gt; may be used. Containers virtualize layers of the operating system, replicating to a deeper lever your environment and making it more reproducible. &lt;a href=&#34;https://docs.docker.com/get-started/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Docker&lt;/a&gt; or Singularity are popular solutions. Unfortunately, building containers may be difficult, and the virtualization may add a layer of complexity to your pipeline&amp;hellip;
+But see &lt;a href=&#34;https://rscdata_science.gitlab.io/rsc_data_science_blog/post/singularity_as_devel_env/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Using singularity as a development environment&lt;/a&gt; and &lt;a href=&#34;https://github.com/microsoft/vscode-remote-release/issues/3066#issuecomment-1019500216&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;How to remote dev with vscode and singularity&lt;/a&gt;. Note that you could use both a container and a virtual environment&amp;hellip; See &lt;a href=&#34;https://rstudio.github.io/renv/articles/docker.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here a tutorial with &lt;code&gt;renv&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Some additional resources&lt;/strong&gt;
+For more information, check &lt;a href=&#34;https://carpentries-incubator.github.io/docker-introduction/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Reproducible Computational Environments Using Containers: Introduction to Docker&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;advanced-topic-package-development&#34;&gt;Advanced topic: package development&lt;/h2&gt;
+&lt;p&gt;It can make sense for research projects to distinguish between scripts placed in &lt;code&gt;scripts/&lt;/code&gt; and reused functions, models, etc., placed in &lt;code&gt;src&lt;/code&gt;. We&amp;rsquo;ll cover that more broadly in another post. In such case, it is best to compartmentalize dependencies so as to have a minimal working environment for the &lt;code&gt;src/&lt;/code&gt; functions and classes, independent of that for your &lt;code&gt;scripts&lt;/code&gt;. One practical approach for this is to specify the &lt;code&gt;src&lt;/code&gt; folder as a package. This has a few advantages, including&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;not having to deal with relative position of files to call the functions in &lt;code&gt;src/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;maximizing your productivity by creating a generic package additionally to your main research project.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can achieve this easily with development tools.&lt;/p&gt;
+&lt;p&gt;For Python, tools like &lt;code&gt;setuptools&lt;/code&gt; and &lt;code&gt;poetry&lt;/code&gt; facilitate package development. If you&amp;rsquo;re working in R, &lt;code&gt;devtools&lt;/code&gt; is the go-to tool for developing packages. In Julia, the &lt;code&gt;Pkg&lt;/code&gt; tool serves a similar purpose.&lt;/p&gt;
+&lt;p&gt;Package templates can be useful to simplify the creation of packages by generating package skeletons. In Python, checkout out &lt;code&gt;cookiecutter&lt;/code&gt;. In R, check &lt;code&gt;usethis&lt;/code&gt;. For Julia, use the &lt;code&gt;Pkg.generate()&lt;/code&gt; built-in functionality, or the more advanced &lt;code&gt;PkgTemplates.jl&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;Note that you may want at some point to locate your &lt;code&gt;src/&lt;/code&gt; (and associated &lt;code&gt;tests&lt;/code&gt;, &lt;code&gt;docs&lt;/code&gt;, etc&amp;hellip;) in a separate git repo.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Some additional resources&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://goodresearch.dev/setup#install-a-project-package&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;goodresearch tutorial&lt;/a&gt; on how to install a project package&lt;/li&gt;
+&lt;li&gt;the &lt;a href=&#34;https://py-pkgs.org/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Python Packages book&lt;/a&gt; offers comprehensive guidance using &lt;code&gt;poetry&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;the &lt;a href=&#34;https://r-pkgs.org/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;R Packages book&lt;/a&gt; covers all aspects of package development.&lt;/li&gt;
+&lt;li&gt;the &lt;a href=&#34;https://pkgdocs.julialang.org/v1/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Pkg documentation&lt;/a&gt; and this &lt;a href=&#34;https://julialang.org/contribute/developing_package/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;how-to guide&lt;/a&gt; for detailed instructions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;take-home-messages&#34;&gt;Take-home messages&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Make sure you understand what are package managers, virtual environments, and dependencies both within your project scripts and at the system level.&lt;/li&gt;
+&lt;li&gt;Clearly document all dependencies and environment setup instructions in project repositories.&lt;/li&gt;
+&lt;li&gt;Provide instructions in an &lt;strong&gt;Installation&lt;/strong&gt; section in the &lt;code&gt;readme.md&lt;/code&gt; on how to set up the virtual environment.&lt;/li&gt;
+&lt;li&gt;Check out these toy research repositories &lt;a href=&#34;https://github.com/mauro3/toy-research-project-breithorn&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;in Julia&lt;/a&gt; (which uses relative paths for importing the &lt;code&gt;src&lt;/code&gt; functions), &lt;a href=&#34;https://github.com/vboussange/rere&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Python&lt;/a&gt; (which has &lt;code&gt;src&lt;/code&gt; as package), and &lt;a href=&#34;https://github.com/vboussange/breithornToyProjectCORDS&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;R&lt;/a&gt; (which has &lt;code&gt;src&lt;/code&gt; as package) that implement what I believe good examples of research projects!&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A multi-language overview on how to organise your research project code and documents</title>
+      <link>https://vboussange.github.io/post/best-practices-for-your-research-code/</link>
+      <pubDate>Tue, 11 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/best-practices-for-your-research-code/</guid>
+      <description>&lt;p&gt;I personally find that one of the biggest challenge when doing research is to keep things neat and organized. Having a good management system for your code and resources is key to optimizing time and brain resources. In this post, I discuss various methods for structuring a research project folder that includes code, data, publications, and more. Additionally, I discuss the specifics of organizing your research code. As I started my PhD, I wish I could have had some of such guidelines. But starting from scratch allowed me to build, with trials and errors, a good system for my later life. Hopefully, some of this can apply to you!&lt;/p&gt;
+&lt;p&gt;This post is part of a series of posts on best practices for managing research code. Much of this material was developed in collaboration with &lt;a href=&#34;https://github.com/mauro3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Mauro Werder&lt;/a&gt; as part of the &lt;a href=&#34;https://github.com/mauro3/CORDS/tree/master&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Course On Reproducible Research, Data Pipelines, and Scientific Computing (CORDS)&lt;/a&gt;. If you have experiences to share or spot any errors, please reach out!&lt;/p&gt;
+&lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#content&#34;&gt;Content&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#project-folder-structures&#34;&gt;Project folder structures&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#code-structure&#34;&gt;&lt;code&gt;code/&lt;/code&gt; structure&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#turning-your-code-into-a-package&#34;&gt;Turning your &lt;code&gt;code/&lt;/code&gt; into a &amp;ldquo;package&amp;rdquo;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#wrapping-up&#34;&gt;Wrapping up&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#take-home-messages&#34;&gt;Take-home messages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;project-folder-structures&#34;&gt;Project folder structures&lt;/h2&gt;
+&lt;p&gt;I quite like this project folder structure, which keeps apart raw data and results from the code, but still place them relatively close, together with admin and publications. Having a separate git repo for the paper is something I would recommend as well (possibly linked to an Overleaf project).&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;|-- code/
+|-- data/
+|-- results
+|-- publications
+|    |-- talks
+|    |-- posters
+|    |-- papers
+|-- admin
+|-- meetings
+|-- more-folders
+ -- README.md
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You may want to place &lt;code&gt;results&lt;/code&gt; within &lt;code&gt;code&lt;/code&gt;, together with &lt;code&gt;data&lt;/code&gt; (which you should not git track)
+The structure of &lt;code&gt;code/&lt;/code&gt; deserves here some attention.&lt;/p&gt;
+&lt;h2 id=&#34;code-structure&#34;&gt;&lt;code&gt;code/&lt;/code&gt; structure&lt;/h2&gt;
+&lt;p&gt;Programming languages typically have their own conventions, but often the folders follow this scheme&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a &lt;code&gt;README.md&lt;/code&gt; file at the top level&lt;/li&gt;
+&lt;li&gt;a &lt;code&gt;src/&lt;/code&gt; folder, containing models and other generic function and classes, that will be used in &lt;code&gt;script/&lt;/code&gt; files,&lt;/li&gt;
+&lt;li&gt;example usages, e.g. &lt;code&gt;examples/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;scripts to run models, evaluation, etc., e.g. &lt;code&gt;scripts/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;documentation (often generated), e.g. &lt;code&gt;docs/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It can make sense for research projects to distinguish between scripts placed in &lt;code&gt;scripts/&lt;/code&gt; and reused functions, models, etc., placed in &lt;code&gt;src&lt;/code&gt;.&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;Python Folder structure&lt;/summary&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;|-- src/            # package code
+|-- scripts/        # Custom analysis or processing scripts
+|-- tests/
+|-- examples/       # Example scripts using the package
+|-- docs/           # documentation
+ -- environment.yml # to handle project dependencies
+ -- README.md
+&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;R Folder structure&lt;/summary&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;|-- R/               # R scripts and functions (package code)
+|-- scripts/         # Custom analysis or processing scripts
+|-- man/             # Documentation files
+|-- tests/
+|-- examples/        # Example scripts using the package
+|-- vignettes/       # Long-form documentation
+ -- DESCRIPTION      # Package description and metadata
+ -- NAMESPACE        # Namespace file for package
+ -- README.md        # Project overview and details
+&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;Julia Folder structure&lt;/summary&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;|-- src/            # package code
+|-- scripts/        # Custom analysis or processing scripts
+|-- test/
+|-- examples/       # Example scripts using the package
+|-- docs/           # documentation
+ -- Project.toml    # to handle project dependencies
+ -- README.md
+&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;
+&lt;h2 id=&#34;turning-your-code-into-a-package&#34;&gt;Turning your &lt;code&gt;code/&lt;/code&gt; into a &amp;ldquo;package&amp;rdquo;&lt;/h2&gt;
+&lt;p&gt;You may want to specify the &lt;code&gt;src&lt;/code&gt; folder as a package. This has a few advantages, including&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;not having to deal with relative position of files to call the functions in &lt;code&gt;src/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;maximizing your productivity by creating a generic package additionally to your main research project.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To import functions and classes (types) located in the &lt;code&gt;src&lt;/code&gt; folder, you typically need to indicate in each script the relative path of &lt;code&gt;src&lt;/code&gt;. In Julia, you would typically do something like &lt;code&gt;include(&amp;quot;../src/path/to/your/src_file.jl&amp;quot;)&lt;/code&gt;. In Python, you would do something like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sys&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;../src/&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;src.path.to.your.src_file&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;my_fun&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If &lt;code&gt;src/&lt;/code&gt; directory grows, it’s beneficial to convert it into a separate package. Although this process is a bit more complex, it eliminates the need for path specifications, simplifies the import of functions and classes, and makes the codebase easily accessible for other research projects.&lt;/p&gt;
+&lt;p&gt;There are typically ways to turn a code-project into an installable package.  This is in particular useful for code which other people (or yourself) use for different projects.&lt;/p&gt;
+&lt;p&gt;You can achieve this easily with development tools.&lt;/p&gt;
+&lt;p&gt;For Python, tools like &lt;code&gt;setuptools&lt;/code&gt; and &lt;code&gt;poetry&lt;/code&gt; facilitate package development. If you&amp;rsquo;re working in R, &lt;code&gt;devtools&lt;/code&gt; is the go-to tool for developing packages. In Julia, the &lt;code&gt;Pkg&lt;/code&gt; tool serves a similar purpose.&lt;/p&gt;
+&lt;p&gt;Package templates can be useful to simplify the creation of packages by generating package skeletons. In Python, checkout out &lt;code&gt;cookiecutter&lt;/code&gt;. In R, check &lt;code&gt;usethis&lt;/code&gt;. For Julia, use the &lt;code&gt;Pkg.generate()&lt;/code&gt; built-in functionality, or the more advanced &lt;code&gt;PkgTemplates.jl&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;Note that you may want at some point to locate your &lt;code&gt;src/&lt;/code&gt; (and associated &lt;code&gt;tests&lt;/code&gt;, &lt;code&gt;docs&lt;/code&gt;, etc&amp;hellip;) in a separate git repo.&lt;/p&gt;
+&lt;p&gt;Further reading for&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://goodresearch.dev/setup#create-a-pip-installable-package-recommended&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://statisticsglobe.com/create-package-r&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;R&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://pkgdocs.julialang.org/v1/creating-packages/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia Pkg.jl documentation and how to create packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://modernjuliaworkflows.github.io&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Modern Julia Workflows website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;wrapping-up&#34;&gt;Wrapping up&lt;/h2&gt;
+&lt;p&gt;Explore these exemplary toy research repositories in different programming languages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mauro3/toy-research-project-breithorn&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia&lt;/a&gt;, using relative paths for importing &lt;code&gt;src&lt;/code&gt; functions.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vboussange/rere&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Python&lt;/a&gt;, implementing &lt;code&gt;src&lt;/code&gt; as a package.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vboussange/breithornToyProjectCORDS&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;R&lt;/a&gt;, also implementing &lt;code&gt;src&lt;/code&gt; as a package.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These repositories showcase what I consider to be best practices in research project organization.&lt;/p&gt;
+&lt;h3 id=&#34;take-home-messages&#34;&gt;Take-home messages&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;There is not one way to structure your research project folders, but general guidelines. Create the one that makes most sense for you!&lt;/li&gt;
+&lt;li&gt;A chosen structure should be suitable to both work during the development of your project, and to submit (parts) of it to a repository in a future stage.&lt;/li&gt;
+&lt;li&gt;Consider turning your &lt;code&gt;src/&lt;/code&gt; into a folder. This can increase your academic productivity, as you could eventually be the developer of a cool package that people re-use, with minimum efforts!&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A multi-language overview on how to test your research project code</title>
+      <link>https://vboussange.github.io/post/testing-your-research-code/</link>
+      <pubDate>Tue, 11 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/post/testing-your-research-code/</guid>
+      <description>&lt;p&gt;Code testing is essential to identify and fix potential issues, to maintain sanity over the course of the development of the project and quickly identify bugs, and to ensure the reliability and sanity of your experiment overtime.&lt;/p&gt;
+&lt;p&gt;This post is part of a series of posts on best practices for managing research project code. Much of this material was developed in collaboration with &lt;a href=&#34;https://github.com/mauro3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Mauro Werder&lt;/a&gt; as part of the &lt;a href=&#34;https://github.com/mauro3/CORDS/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Course On Reproducible Research, Data Pipelines, and Scientific Computing (CORDS)&lt;/a&gt;. If you have experiences to share or spot any errors, please reach out!&lt;/p&gt;
+&lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#content&#34;&gt;Content&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#unit-testing&#34;&gt;Unit testing&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#lightweight-formal-tests-with-assert&#34;&gt;Lightweight formal tests with &lt;code&gt;assert&lt;/code&gt;&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#python&#34;&gt;Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#julia&#34;&gt;Julia&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#testing-with-a-test-suite&#34;&gt;Testing with a test suite&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#python-1&#34;&gt;Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#julia-1&#34;&gt;Julia&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#r&#34;&gt;R&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#testing-non-pure-functions-and-classes&#34;&gt;Testing non-pure functions and classes&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#python-2&#34;&gt;Python&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#continuous-integration&#34;&gt;Continuous integration&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#cool-tip&#34;&gt;Cool tip&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#other-types-of-tests&#34;&gt;Other types of tests&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#resources&#34;&gt;Resources&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#take-home-messages&#34;&gt;Take-home messages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;unit-testing&#34;&gt;Unit testing&lt;/h2&gt;
+&lt;p&gt;Unit testing involves testing a unit of code, typically a single function, to ensure its correctness. Here are some key aspects to consider:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Test for correctness with typical inputs.&lt;/li&gt;
+&lt;li&gt;Test edge cases.&lt;/li&gt;
+&lt;li&gt;Test for errors with bad inputs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some developers start writing unit tests before writing the actual function, a practice known as &lt;a href=&#34;https://en.wikipedia.org/wiki/Test-driven_development&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Test-Driven Development (TDD)&lt;/a&gt;. Define upstream on a piece of paper the behavior of the function, write corresponding tests, and when all tests pass, you are done. This philosophy  ensures that you have a well-tested implementation, and avoids unnecessary feature development, forcing you to focus only on what is needed. While TDD is a powerful idea, it can be challenging to follow strictly.&lt;/p&gt;
+&lt;p&gt;A good idea is to write an additional test when you find a bug in your code.&lt;/p&gt;
+&lt;h3 id=&#34;lightweight-formal-tests-with-assert&#34;&gt;Lightweight formal tests with &lt;code&gt;assert&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The simplest form of unit testing involves some sort of &lt;code&gt;assert&lt;/code&gt; statement.&lt;/p&gt;
+&lt;h4 id=&#34;python&#34;&gt;Python&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;julia&#34;&gt;Julia&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nd&#34;&gt;@assert&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;When one test is broken, you&amp;rsquo;ll get an error for the corresponding test, which you&amp;rsquo;ll need to fix to check the following tests.&lt;/p&gt;
+&lt;p&gt;In Julia or Python, you could directly place the &lt;code&gt;assert&lt;/code&gt; statement after your functions. This way, tests are run each time you execute the script. Here is nother pythonic approach, which can be used to decouple the test&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;40&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;102334155&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Tests passed&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Consider using &lt;code&gt;np.isclose&lt;/code&gt;, &lt;code&gt;np.testing.assert_allclose&lt;/code&gt; (Python) or &lt;code&gt;approx&lt;/code&gt; (Julia) for floating point comparisons.&lt;/p&gt;
+&lt;h3 id=&#34;testing-with-a-test-suite&#34;&gt;Testing with a test suite&lt;/h3&gt;
+&lt;p&gt;Once you have many tests, it makes sense to group them into a test suite and run them with a test runner. This approach will run all tests, even though some are broken, and retrieve and informative statements on those tests that passed, and those that did not. As you&amp;rsquo;ll see, it also allows to automatically run the test at each commit, with continuous integration.&lt;/p&gt;
+&lt;h4 id=&#34;python-1&#34;&gt;Python&lt;/h4&gt;
+&lt;p&gt;Two main frameworks for unit tests in Python are &lt;code&gt;pytest&lt;/code&gt; and &lt;code&gt;unittest&lt;/code&gt;, with &lt;code&gt;pytest&lt;/code&gt; being more popular.&lt;/p&gt;
+&lt;p&gt;Example using &lt;code&gt;pytest&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;src.fib&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pytest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;test_typical&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;40&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;102334155&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;test_edge_case&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;test_raises&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pytest&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;raises&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;ne&#34;&gt;NotImplementedError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pytest&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;raises&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;ne&#34;&gt;NotImplementedError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;fib&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;1.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Run the tests with:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pytest test_fib.py
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;julia-1&#34;&gt;Julia&lt;/h4&gt;
+&lt;p&gt;Built in module &lt;code&gt;Test&lt;/code&gt;, relying on the macro &lt;code&gt;@test&lt;/code&gt;. Consider grouping your tests with&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;julia&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nd&#34;&gt;@testset&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;trigonometric identities&amp;#34;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;π&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;nd&#34;&gt;@test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;≈&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;nd&#34;&gt;@test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;≈&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;nd&#34;&gt;@test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;≈&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;nd&#34;&gt;@test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;≈&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;^&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;θ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;^&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will nicely output&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Test Summary:            | Pass  Total  Time
+trigonometric identities |    4      4  0.2s
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which comes handy for grouping tests applied to a single function or concept. Test functions may require additional packages to your minimum working environment specified at your package root folder. An additional virtual environment may be specified for tests! To develop my tests interactively, I like using &lt;a href=&#34;https://github.com/JuliaTesting/TestEnv.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;TestEnv&lt;/code&gt;&lt;/a&gt;. Unfortunately, using &lt;code&gt;Pkg.activate&lt;/code&gt; in &lt;code&gt;tests&lt;/code&gt; would not work there, you. You need &lt;code&gt;TestEnv&lt;/code&gt; to have access to your package functions;&lt;/p&gt;
+&lt;p&gt;In your package environment,&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;using TestEnv
+TestEnv.activate()
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will activate the test environment.&lt;/p&gt;
+&lt;p&gt;To reactivate the normal environment,&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Pkg.activate(&amp;#34;.&amp;#34;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;a href=&#34;https://discourse.julialang.org/t/how-to-use-vscode-and-repl-to-write-and-test-a-package/78818/44&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Here is a nice thread to read more on that&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;r&#34;&gt;R&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;https://testthat.r-lib.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;code&gt;testhat&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;testing-non-pure-functions-and-classes&#34;&gt;Testing non-pure functions and classes&lt;/h3&gt;
+&lt;p&gt;For nondeterministic functions, provide the random seed or variables needed by the function as arguments to make them deterministic.
+For stateful functions, test postconditions to ensure the internal state changes as expected.
+For functions with I/O side effects, create mock files to verify proper input reading and expected output.&lt;/p&gt;
+&lt;h4 id=&#34;python-2&#34;&gt;Python&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;file_to_upper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;fout&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;line&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;n&#34;&gt;fout&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;line&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;fout&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;tempfile&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;os&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;test_file_to_upper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tempfile&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NamedTemporaryFile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mode&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tempfile&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NamedTemporaryFile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test123&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\n&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;thetest&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;file_to_upper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;TEST123&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\n&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;THETEST&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unlink&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;in_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unlink&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;out_file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;continuous-integration&#34;&gt;Continuous integration&lt;/h2&gt;
+&lt;p&gt;Automated testing on local machines is useful, but you can do better with continuous integration (CI). In fact, CI is essential for projects involving multiple developers and various target platforms. CI consists in running tests whenever changes are committed.
+CI can also be used to automatically build documentation, check for code coverage, and more. GitHub Actions is a popular CI tool available within GitHub.
+CI is based on &lt;code&gt;.yaml&lt;/code&gt; files, which specify the environment to run the script. You can build matrices to test across different environments (e.g. Linux, Windows and MacOS, with different versino of python or Julia). Jobs will be created that run our tests for each permutation of these.&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;An example CI.yaml file for Julia&lt;/summary&gt;
+&lt;pre&gt;&lt;code&gt;
+name: Run tests
+&lt;p&gt;on:
+push:
+branches:
+- master
+- main
+pull_request:&lt;/p&gt;
+&lt;p&gt;permissions:
+actions: write
+contents: read&lt;/p&gt;
+&lt;p&gt;jobs:
+test:
+runs-on: ${{ matrix.os }}
+strategy:
+matrix:
+julia-version: [&amp;lsquo;1.6&amp;rsquo;, &amp;lsquo;1&amp;rsquo;, &amp;rsquo;nightly&amp;rsquo;]
+julia-arch: [x64, x86]
+os: [ubuntu-latest, windows-latest, macOS-latest]
+exclude:
+- os: macOS-latest
+julia-arch: x86&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;steps:
+  - uses: actions/checkout@v4
+  - uses: julia-actions/setup-julia@v1
+    with:
+      version: ${{ matrix.julia-version }}
+      arch: ${{ matrix.julia-arch }}
+  - uses: julia-actions/cache@v1
+  - uses: julia-actions/julia-buildpkg@v1
+  - uses: julia-actions/julia-runtest@v1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;An example CI.yaml file for Python&lt;/summary&gt;
+&lt;p&gt;This action installs the conda environment called &lt;code&gt;glacier-mass-balance&lt;/code&gt;, specified in the &lt;code&gt;environment.yml&lt;/code&gt; file.
+It then runs &lt;code&gt;pytest&lt;/code&gt;, supposing that you have a &lt;code&gt;test/&lt;/code&gt; folder where your functions are located. First try whether &lt;code&gt;pytest&lt;/code&gt; works locally. Do not forget to have &lt;code&gt;pytest&lt;/code&gt; in your dependencies.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+name: Run tests
+on: push
+
+jobs:
+  miniconda:
+    name: Miniconda ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            os: [&#34;ubuntu-latest&#34;]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          environment-file: environment.yml
+          activate-environment: glacier-mass-balance
+          auto-activate-base: false
+      - name: Run pytest
+        shell: bash -l {0}
+        run: | 
+          pytest
+&lt;/pre&gt;&lt;/code&gt;
+&lt;/details&gt;
+&lt;h4 id=&#34;cool-tip&#34;&gt;Cool tip&lt;/h4&gt;
+&lt;p&gt;You can include a cool badge to show visually whether your tests are passing or failing, like so&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/vboussange/rere/actions/workflows/runtest.yml&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://github.com/vboussange/rere/actions/workflows/runtest.yml/badge.svg&#34; alt=&#34;Tests&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can get the code for this badge by going on your github repo, then Actions. Click on the test action, then on top right click on the &lt;code&gt;...&lt;/code&gt; and `Create status badge```.&lt;/p&gt;
+&lt;p&gt;Cool right?&lt;/p&gt;
+&lt;h2 id=&#34;other-types-of-tests&#34;&gt;Other types of tests&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Docstring tests&lt;/strong&gt;: Unit tests embedded in docstrings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Integration tests&lt;/strong&gt;: Test whether multiple functions work correctly together.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Regression tests&lt;/strong&gt;: Ensure your code produces the same outputs as previous versions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;resources&#34;&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Official GitHub documentation on building and testing Python projects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.allenai.org/ci-with-github-actions-for-research-code-a8460c21c6ba&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CI with GitHub Action and Docker for Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.julialang.org/en/v1/stdlib/Test/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Julia documentation on unit testing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://goodresearch.dev/testing.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Good Research Practices: Testing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://carpentries-incubator.github.io/python-testing/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;The Carpentries: Python Testing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;take-home-messages&#34;&gt;Take-home messages&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Systematically implementing testing allows you to ensure the sanity of your code&lt;/li&gt;
+&lt;li&gt;The overhead cost of testing is usually well balanced by the reduced time spent downstream in identifying bugs&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

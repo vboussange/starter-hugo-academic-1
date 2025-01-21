@@ -1,0 +1,1422 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.5.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Victor Boussange" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://vboussange.github.io/post/param-inference/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.c7b8d9abd591ba2253ea42747e3ac3f5.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.e86434ae70bd28d2a9bb384cdaa99ea3.css" />
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://vboussange.github.io/post/param-inference/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@wowchemy" />
+    <meta property="twitter:creator" content="@wowchemy" />
+  
+  <meta property="og:site_name" content="Victor Boussange" />
+  <meta property="og:url" content="https://vboussange.github.io/post/param-inference/" />
+  <meta property="og:title" content="Parameter Inference in dynamical systems | Victor Boussange" />
+  <meta property="og:description" content="One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data." /><meta property="og:image" content="https://vboussange.github.io/post/param-inference/featured.png" />
+    <meta property="twitter:image" content="https://vboussange.github.io/post/param-inference/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2021-01-09T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2021-01-09T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://vboussange.github.io/post/param-inference/"
+  },
+  "headline": "Parameter Inference in dynamical systems",
+  
+  "image": [
+    "https://vboussange.github.io/post/param-inference/featured.png"
+  ],
+  
+  "datePublished": "2021-01-09T00:00:00Z",
+  "dateModified": "2021-01-09T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Victor Boussange"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Victor Boussange",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_192x192_fill_lanczos_center_3.png"
+    }
+  },
+  "description": "One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+processEscapes: true
+}
+});
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+  <title>Parameter Inference in dynamical systems | Victor Boussange</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="797a7c7bc12dd6a48fbdcabd69bbaaa2" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.e22a2a20712150175b9cd707be2d0584.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#about"><span>Home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#softwares"><span>🧑🏽‍💻 Softwares</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#publications"><span>📄 Publications & Talks</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#teaching"><span>🎓 Teaching & resources</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#posts"><span>💬 Posts</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+        
+
+        
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+        
+        
+        <li class="nav-item dropdown theme-dropdown">
+          <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+            <i class="fas fa-moon" aria-hidden="true"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item js-set-theme-light">
+              <span>Light</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-dark">
+              <span>Dark</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-auto">
+              <span>Automatic</span>
+            </a>
+          </div>
+        </li>
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    
+    
+    
+
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+<div class="article-container pt-3">
+  <h1>Parameter Inference in dynamical systems</h1>
+
+  
+  <p class="page-subtitle">One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data.</p>
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span class="author-highlighted">
+      Victor Boussange</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Jan 9, 2021
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/demo/">Demo</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header container featured-image-wrapper mt-4 mb-4" style="max-width: 576px; max-height: 474px;">
+  <div style="position: relative">
+    <img src="/post/param-inference/featured_hu761b1af2641a576b4155e36d8dfc1376_62554_1200x2500_fit_q75_h2_lanczos_3.webp" width="576" height="474" alt="" class="featured-image">
+    <span class="article-header-caption">Calibrating a system of differential equations on data for the project Econobiology.</span>
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>One of the challenges modellers face in biological sciences is to calibrate models in order to match as closely as possible observations and gain predictive power. This can be done via direct measurements through experimental design, but this process is often costly, time consuming and even sometimes not possible.
+Scientific machine learning addresses this problem by applying optimisation techniques originally developed within the field of machine learning to mechanistic models, allowing  to infer parameters directly from observation data.
+In this blog post, I shall explain the basics of this approach, and how the Julia ecosystem has efficiently embedded such techniques into ready to use packages. This promises exciting perspectives for modellers in all areas of environmental sciences.</p>
+<blockquote>
+<p>🚧 This is Work in progress 🚧</p>
+</blockquote>
+<p>Dynamical systems are models that allow to reproduce, understand and forecast systems. They connect the time variation of the state of the system to the fundamental processes we believe driving it, that is</p>
+<p>$$
+\begin{equation*}
+\text{ time variation of }  🌍_t  = \sum \text{processes acting on }  🌍_t
+\end{equation*}
+$$</p>
+<p>where $🌍_t$ denotes the state of the system at time $t$. This translates mathematically into</p>
+<p>$$
+\begin{equation}
+\partial_t(🌍_t) = f_\theta( 🌍_t )
+\end{equation}\tag{1}
+$$</p>
+<p>where the function $f_\theta$ captures the ensembles of the processes considered, and depend on the parameters $\theta$.</p>
+<p>Eq. (1) is a Differential Equation, that can be integrated with respect to time to obtain the state of the system at time $t$ given an initial state $🌍_{t_0}$.</p>
+<p>$$
+\begin{equation}
+🌍_t = 🌍_{t_0} + \int_0^t f_\theta( 🌍_s ) ds
+\end{equation}\tag{2}
+$$</p>
+<p>Dynamical systems have been used for hundreds of years and have successfully captured e.g. the motion of planets (<a href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion#Second_law" target="_blank" rel="noopener">second law of Kepler</a>), <a href="https://en.wikipedia.org/wiki/RC_circuit#Natural_response" target="_blank" rel="noopener">the voltage in an electrical circuit</a>, population dynamics (<a href="https://en.wikipedia.org/wiki/Lotka%e2%80%93Volterra_equations" target="_blank" rel="noopener">Lotka Volterra equations</a>) and morphogenesis (<a href="https://en.wikipedia.org/wiki/Turing_pattern" target="_blank" rel="noopener">Turing patterns</a>)&hellip;</p>
+<p>Such models can be used to <strong>forecast the state of the system in the future</strong>, or can be used in the sense of <strong>virtual laboratories</strong>. In both cases, one of the requirement is that they <strong>reproduce patterns</strong> - at least at a qualitative level. To do so, the modeler needs to find the true parameter combination $\theta$ that correspond to the system under consideration. And this is tricky! In this post we adress this challenge.</p>
+<h2 id="model-calibration">Model calibration</h2>
+<blockquote>
+<p>How to determine $\theta$ so that $\text{simulations} \approx \text{empirical data}$?</p>
+</blockquote>
+<p>The best way to do that is to design an experiment!</p>
+<iframe src="https://giphy.com/embed/0DYipdNqJ5n4GYATKL" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/BTTF-back-to-the-future-bttf-one-0DYipdNqJ5n4GYATKL"></a></p>
+<p>When possible, measuring directly the parameters in a controlled experiment with e.g. physical devices is a great approach. This is a very powerful scientific method, used e.g. in <a href="https://en.wikipedia.org/wiki/General_circulation_model" target="_blank" rel="noopener">global circulation models</a> where scientists can measure the water viscosity, the change in water density with respect to temperature, etc&hellip; Unfortunately, such direct methods are often not possible considering other systems.</p>
+<p>An opposite approach, known as inverse modelling, is to infer the parameters undirectly with the empirical data available.</p>
+<h3 id="parameter-exploration">Parameter exploration</h3>
+<p>One way to find right parameters is to perform parameter exploration, that is, slicing the parameter space and running the model for all parameter combinations chosen. Comparing the simulation results to the empirical data available, one can elect the combination with the higher explanatory power.</p>
+<p>But as the parameter space becomes larger (higher number of parameters) this becomes tricky. Such problem is often refered to as the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality" target="_blank" rel="noopener">curse of dimensionality</a>. Feels very much like being lost in a giant maze. We need more clever technique to get out!</p>
+<h3 id="a-machine-learning-problem">A Machine Learning problem</h3>
+<p>In machine learning, people try to predict a variable $y$ from predictors $x$ by finding suitable parameters $\theta$ of a parametric function $F_\theta$ so that</p>
+<p>$$
+\begin{equation}
+y = F_\theta(x)
+\end{equation}\tag{3}
+$$</p>
+<p>For example, in computer vision, this function might be designed for the specific task of labelling images, such as for instance</p>
+<p>$F_\theta ($
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_c90526d6725adf39222179690a5142ca.webp 400w,
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_46663fad0d99480319290c55595ab2b7.webp 760w,
+               /media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/media/misc/cat_huf55ea8c21a4468ddffcf64f426634654_6276_c90526d6725adf39222179690a5142ca.webp"
+               width="300"
+               height="168"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+$) \to \{\text{cat}, \text{dog}\}$</p>
+<p>Usually people use neural networks so that $F_\theta \equiv NN_\theta$, as they are good approximators for high dimensional function (see the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem" target="_blank" rel="noopener">Universal approximation theorem</a>). One should really see neural networks as functions ! For example, feed forward neural networks are mathematically described by a series of matrix multiplications and nonlinear operations, i.e. $NN_\theta (x) = \sigma_1 \circ f_1 \circ  \dots \circ \sigma_n \circ f_n(x)$
+where $\sigma_i$ is an activation function and $f_i$ is linear function
+$$
+\begin{equation*}
+f_i (x) = A_i x + b_i .
+\end{equation*}
+$$
+<strong>Notice that Eq. (2) is similar to Eq. (3)</strong>! Indeed one can think of $🌍_0$ as the analogous to $x$ - i.e. the predictor - and $🌍_t$ as the variable $y$ to predict:</p>
+<p>$$
+\begin{equation*}
+🌍_t = F_\theta(🌍_{t_0})
+\end{equation*}
+$$</p>
+<p>where $$F_\theta (🌍_{t_0}) \equiv 🌍_{t_0} + \int_0^t f_\theta( 🌍_s ) ds .$$</p>
+<p>With this perspective in mind, techniques developed within the field of Machine Learning - to find suitable parameters $\theta$ that best predict $y$ - become readily available to reach our specific needs: model calibration!</p>
+<h2 id="parameter-inference">Parameter inference</h2>
+<p>The general strategy to find a suitable neural network that can perform the tasks required is to &ldquo;train&rdquo; it, that is, to find the parameters $\theta$ so that its predictions are accurate.</p>
+<p>In order to train it, one &ldquo;scores&rdquo; how good a combination of parameter $\theta$ performs. A way to do so is to introduce a &ldquo;<strong>Loss function</strong>&rdquo;</p>
+<p>$$
+\begin{equation*}
+L(\theta) = (F_\theta(x) - y_{\text{empirical}})^2
+\end{equation*}
+$$</p>
+<p>One can then use an optimisation method to find a local minima (and in the best scenario, the global minima) for $L$.</p>
+<h3 id="gradient-descent">Gradient descent</h3>
+<p>You ready?</p>
+<iframe src="https://giphy.com/embed/l2Je5HLxfeuppOkuc" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/toferra-ski-skiing-into-the-mind-l2Je5HLxfeuppOkuc"></a></p>
+<p>Gradient descent and stochastic gradient descent are &ldquo;iterative optimisation methods that seek to find a local minimum of a differentiable function&rdquo; (<a href="https://en.wikipedia.org/wiki/Gradient_descent" target="_blank" rel="noopener">Wikipedia</a>). Such methods have become widely used with the development of artifical intelligence.</p>
+<p>Those methods are used to compute iteratively $\theta$ using the sensitivity of the loss function to changes in $\theta$, denoted by $\partial_\theta L(\theta)$</p>
+<p>$$
+\begin{equation*}
+\theta^{i+1} = \theta^{(i)} - \lambda \partial_\theta L(\theta)
+\end{equation*}
+$$</p>
+<p>where $\lambda$ is called the learning rate.</p>
+<h2 id="in-practice">In practice</h2>
+<p>The sensitivity with respect to the parameters $\partial_\theta L(\theta)$ is in practice obtained by differentiating the code (<a href="https://en.wikipedia.org/wiki/Automatic_differentiation" target="_blank" rel="noopener">Automatic Differentiation</a>).</p>
+<p>For some programming languages this can be done automatically, with low computational cost. In particular, <a href="https://github.com/FluxML/Flux.jl" target="_blank" rel="noopener">Flux.jl</a> allows to efficiently obtain the gradient of any function written in the wonderful language <a href="https://julialang.org" target="_blank" rel="noopener">Julia</a>.</p>
+<p>The library <a href="https://github.com/SciML/DiffEqFlux.jl" target="_blank" rel="noopener">DiffEqFlux.jl</a> based on <a href="https://github.com/FluxML/Flux.jl" target="_blank" rel="noopener">Flux.jl</a> implements differentiation rules (<a href="https://juliadiff.org/ChainRulesCore.jl/stable/" target="_blank" rel="noopener">custom adjoints</a>) to obtain even more efficiently the sensitivity of a loss function that depends on the numerical solution of a differential equation. That is, <a href="https://github.com/SciML/DiffEqFlux.jl" target="_blank" rel="noopener">DiffEqFlux.jl</a> precisely allows to do parameter inference in dynamical systems. Go and check it out!</p>
+
+    </div>
+
+    
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/scientific-machine-learning/">Scientific Machine Learning</a>
+  
+  <a class="badge badge-light" href="/tag/julia/">julia</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://vboussange.github.io/post/param-inference/&amp;text=Parameter%20Inference%20in%20dynamical%20systems" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://vboussange.github.io/post/param-inference/&amp;t=Parameter%20Inference%20in%20dynamical%20systems" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Parameter%20Inference%20in%20dynamical%20systems&amp;body=https://vboussange.github.io/post/param-inference/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://vboussange.github.io/post/param-inference/&amp;title=Parameter%20Inference%20in%20dynamical%20systems" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Parameter%20Inference%20in%20dynamical%20systems%20https://vboussange.github.io/post/param-inference/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://vboussange.github.io/post/param-inference/&amp;title=Parameter%20Inference%20in%20dynamical%20systems" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://vboussange.github.io"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hue95c9cac2955bb5fc8cb56628af3154e_174591_270x270_fill_q75_lanczos_center.jpg" alt="Victor Boussange"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://vboussange.github.io">Victor Boussange</a></h5>
+      <h6 class="card-subtitle">Postdoctoral researcher</h6>
+      <p class="card-text">Researcher in ecology and evolution, scientific machine learning enthusiastic.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:vic.boussange@gmail.com" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=SaQH5YoAAAAJ&amp;hl=en" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/vboussange" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/uploads/CV_vboussange.pdf" >
+        <i class="ai ai-cv"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://orcid.org/0000-0002-4202-3599" target="_blank" rel="noopener">
+        <i class="ai ai-orcid"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  
+  
+  
+
+  
+  
+    
+  
+  
+    
+  
+
+  
+
+  
+  <p class="powered-by copyright-license-text">
+    © 2025 Me. This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">CC BY NC ND 4.0</a>
+  </p>
+  
+
+  <p class="powered-by footer-license-icons">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank" aria-label="Creative Commons">
+      <i class="fab fa-creative-commons fa-2x" aria-hidden="true"></i>
+      <i class="fab fa-creative-commons-by fa-2x" aria-hidden="true"></i>
+      
+        <i class="fab fa-creative-commons-nc fa-2x" aria-hidden="true"></i>
+      
+      
+        <i class="fab fa-creative-commons-nd fa-2x" aria-hidden="true"></i>
+      
+    </a>
+  </p>
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.3d946de2e8784a477845261d87025092.js"></script>
+
+    
+    
+    
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/latex.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/julia.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdn.jsdelivr.net/gh/krisk/Fuse@v3.2.1/dist/fuse.min.js" integrity="sha512-o38bmzBGX+hD3JHWUFCDA09btWaqrNmoJ3RXLlrysA7PP01Kgs4UlE4MhelE1v5dJR3+cxlR4qQlotsW7jKsnw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/julmot/mark.js@8.11.1/dist/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+
+    
+    
+    
+    <script id="page-data" type="application/json">{"use_headroom":true}</script>
+
+    
+    
+      <script src="/js/wowchemy-headroom.e8fd2d733eef6a8bbbe0539398fc0547.js" type="module"></script>
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.de33c90527762392d440555c36739dd9.js"></script>
+
+    
+    
+    
+    
+    
+    
+      
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="/js/wowchemy-publication.b0d291ed6d27eacec233e6cf5204f99a.js" type="module"></script>
+
+
+
+
+
+
+</body>
+</html>

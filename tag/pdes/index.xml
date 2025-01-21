@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PDEs | Victor Boussange</title>
+    <link>https://vboussange.github.io/tag/pdes/</link>
+      <atom:link href="https://vboussange.github.io/tag/pdes/index.xml" rel="self" type="application/rss+xml" />
+    <description>PDEs</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 05 Oct 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png</url>
+      <title>PDEs</title>
+      <link>https://vboussange.github.io/tag/pdes/</link>
+    </image>
+    
+    <item>
+      <title>Forward and inverse modelling of eco-evolutionary dynamics in ecological and economic systems</title>
+      <link>https://vboussange.github.io/publication/phd_thesis/</link>
+      <pubDate>Wed, 05 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/publication/phd_thesis/</guid>
+      <description>&lt;!-- 
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Create your slides in Markdown - click the &lt;em&gt;Slides&lt;/em&gt; button to check out the example.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+Supplementary notes can be added here, including [code, math, and images](https://wowchemy.com/docs/writing-markdown-latex/). --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Deep learning approximations for non-local nonlinear PDEs with Neumann boundary conditions</title>
+      <link>https://vboussange.github.io/publication/deep_learning_for_pdes/</link>
+      <pubDate>Thu, 05 May 2022 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/publication/deep_learning_for_pdes/</guid>
+      <description>&lt;!-- 
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Create your slides in Markdown - click the &lt;em&gt;Slides&lt;/em&gt; button to check out the example.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+Supplementary notes can be added here, including [code, math, and images](https://wowchemy.com/docs/writing-markdown-latex/). --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Machine learning to solve highly dimensional non-local nonlinear PDEs</title>
+      <link>https://vboussange.github.io/project/highdimpde/</link>
+      <pubDate>Sat, 27 Jun 2020 00:00:00 +0000</pubDate>
+      <guid>https://vboussange.github.io/project/highdimpde/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Partial_differential_equation&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Partial Differential Equations&lt;/a&gt; (PDEs) are equations that arise in a variety of models in physics, engineering, finance and biology. I develop &lt;strong&gt;numerical methods&lt;/strong&gt; based on &lt;strong&gt;machine learning techniques&lt;/strong&gt; to simulate a special class of PDEs in high dimension, that can capture non-locality (cf generic form of the PDEs below). Such PDEs permit to e.g. &lt;strong&gt;model the evolution of biological populations in a realistic manner&lt;/strong&gt;, by describing the dynamics of several &lt;em&gt;traits&lt;/em&gt; characterising individuals. For plants, traits correspond for instance to flower colour, specific leaf area, seed mass, etc&amp;hellip;. These characteristics define a high dimensional space that must be considered when modelling ecological and evolutionary processes in biological populations, as they determine the overall fitness of a population in a given environment.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-trait-diversity-in-the-genus-hemerocallis-plants-can-be-caracterised-by-many-different-traits-all-of-which-can-be-assigned-numerical-values--flower-colour-specific-leaf-area-seed-mass-plant-nitrogen-fixation-capacity-leaf-shape-flower-sex-plant-woodiness-source-h-cui-et-al-2019httpsdoiorg101371journalpone0216460&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;Trait diversity in the genus Hemerocallis. Plants can be caracterised by many different traits, all of which can be assigned numerical values:  Flower colour, specific leaf area, seed mass, Plant nitrogen fixation capacity, Leaf shape, Flower sex, plant woodiness. Source: [H Cui et al. 2019](https://doi.org/10.1371/journal.pone.0216460)&#34; srcset=&#34;
+               /media/misc/hemerocallis_hu5a7d427b548baca5d48d20c73022fb53_88058_99dfd9ed3505ee79f64ac6a84682cfb0.webp 400w,
+               /media/misc/hemerocallis_hu5a7d427b548baca5d48d20c73022fb53_88058_047a132af0bac787eb8fa2108ef84f97.webp 760w,
+               /media/misc/hemerocallis_hu5a7d427b548baca5d48d20c73022fb53_88058_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://vboussange.github.io/media/misc/hemerocallis_hu5a7d427b548baca5d48d20c73022fb53_88058_99dfd9ed3505ee79f64ac6a84682cfb0.webp&#34;
+               width=&#34;732&#34;
+               height=&#34;760&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption&gt;
+      Trait diversity in the genus Hemerocallis. Plants can be caracterised by many different traits, all of which can be assigned numerical values:  Flower colour, specific leaf area, seed mass, Plant nitrogen fixation capacity, Leaf shape, Flower sex, plant woodiness. Source: &lt;a href=&#34;https://doi.org/10.1371/journal.pone.0216460&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;H Cui et al. 2019&lt;/a&gt;
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;High dimensionality leads to numerical difficulties in simulating the models. The methods I develop overcome this so-called &amp;ldquo;curse of dimensionality&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;The equation below defines the class of PDEs I am interested in. These PDEs are also referred in the literature as non-local reaction diffusion equations.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+(\tfrac{\partial}{\partial t}u)(t,x)
+&amp;amp;=
+\int_{D} f\big(t,x,{\bf x}, u(t,x),u(t,{\bf x}), ( \nabla_x u )(t,x ),( \nabla_x u )(t,{\bf x} ) \big) \, \nu_x(d{\bf x}) \\
+&amp;amp; \quad + \big\langle \mu(t,x), ( \nabla_x u )( t,x ) \big\rangle + \tfrac{ 1 }{ 2 }
+\text{Trace}\big(
+\sigma(t,x) [ \sigma(t,x) ]^*
+( \text{Hess}_x u)( t,x )
+\big).
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;I have implemented those schemes in &lt;a href=&#34;https://github.com/SciML/HighDimPDE.jl&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HighDimPDE.jl&lt;/a&gt;, a Julia package that should allow scientists to develop models that better capture the complexity of life. These techniques extend beyond biology and are also relevant for other fields, such as finance.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1556 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.5.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Victor Boussange" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Code testing is essential to identify and fix potential issues, to maintain sanity over the course of the development of the project and quickly identify bugs, and to ensure the reliability and sanity of your experiment overtime." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://vboussange.github.io/post/testing-your-research-code/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.c7b8d9abd591ba2253ea42747e3ac3f5.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.e86434ae70bd28d2a9bb384cdaa99ea3.css" />
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://vboussange.github.io/post/testing-your-research-code/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@wowchemy" />
+    <meta property="twitter:creator" content="@wowchemy" />
+  
+  <meta property="og:site_name" content="Victor Boussange" />
+  <meta property="og:url" content="https://vboussange.github.io/post/testing-your-research-code/" />
+  <meta property="og:title" content="A multi-language overview on how to test your research project code | Victor Boussange" />
+  <meta property="og:description" content="Code testing is essential to identify and fix potential issues, to maintain sanity over the course of the development of the project and quickly identify bugs, and to ensure the reliability and sanity of your experiment overtime." /><meta property="og:image" content="https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png" />
+    <meta property="twitter:image" content="https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2024-06-11T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2024-06-25T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://vboussange.github.io/post/testing-your-research-code/"
+  },
+  "headline": "A multi-language overview on how to test your research project code",
+  
+  "datePublished": "2024-06-11T00:00:00Z",
+  "dateModified": "2024-06-25T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Victor Boussange"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Victor Boussange",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_192x192_fill_lanczos_center_3.png"
+    }
+  },
+  "description": "Code testing is essential to identify and fix potential issues, to maintain sanity over the course of the development of the project and quickly identify bugs, and to ensure the reliability and sanity of your experiment overtime."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+processEscapes: true
+}
+});
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+  <title>A multi-language overview on how to test your research project code | Victor Boussange</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="d166ecdb9e9a858e8b2a05ade401aa43" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.e22a2a20712150175b9cd707be2d0584.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#about"><span>Home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#softwares"><span>🧑🏽‍💻 Softwares</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#publications"><span>📄 Publications & Talks</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#teaching"><span>🎓 Teaching & resources</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#posts"><span>💬 Posts</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+        
+
+        
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+        
+        
+        <li class="nav-item dropdown theme-dropdown">
+          <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+            <i class="fas fa-moon" aria-hidden="true"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item js-set-theme-light">
+              <span>Light</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-dark">
+              <span>Dark</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-auto">
+              <span>Automatic</span>
+            </a>
+          </div>
+        </li>
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    
+    
+    
+
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>A multi-language overview on how to test your research project code</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span class="author-highlighted">
+      Victor Boussange</span>, <span >
+      Mauro Werder</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    Jun 25, 2024
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>Code testing is essential to identify and fix potential issues, to maintain sanity over the course of the development of the project and quickly identify bugs, and to ensure the reliability and sanity of your experiment overtime.</p>
+<p>This post is part of a series of posts on best practices for managing research project code. Much of this material was developed in collaboration with <a href="https://github.com/mauro3" target="_blank" rel="noopener">Mauro Werder</a> as part of the <a href="https://github.com/mauro3/CORDS/" target="_blank" rel="noopener">Course On Reproducible Research, Data Pipelines, and Scientific Computing (CORDS)</a>. If you have experiences to share or spot any errors, please reach out!</p>
+<h2 id="content">Content</h2>
+<ul>
+<li><a href="#content">Content</a></li>
+<li><a href="#unit-testing">Unit testing</a>
+<ul>
+<li><a href="#lightweight-formal-tests-with-assert">Lightweight formal tests with <code>assert</code></a>
+<ul>
+<li><a href="#python">Python</a></li>
+<li><a href="#julia">Julia</a></li>
+</ul>
+</li>
+<li><a href="#testing-with-a-test-suite">Testing with a test suite</a>
+<ul>
+<li><a href="#python-1">Python</a></li>
+<li><a href="#julia-1">Julia</a></li>
+<li><a href="#r">R</a></li>
+</ul>
+</li>
+<li><a href="#testing-non-pure-functions-and-classes">Testing non-pure functions and classes</a>
+<ul>
+<li><a href="#python-2">Python</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#continuous-integration">Continuous integration</a>
+<ul>
+<li><a href="#cool-tip">Cool tip</a></li>
+</ul>
+</li>
+<li><a href="#other-types-of-tests">Other types of tests</a></li>
+<li><a href="#resources">Resources</a></li>
+<li><a href="#take-home-messages">Take-home messages</a></li>
+</ul>
+<h2 id="unit-testing">Unit testing</h2>
+<p>Unit testing involves testing a unit of code, typically a single function, to ensure its correctness. Here are some key aspects to consider:</p>
+<ul>
+<li>Test for correctness with typical inputs.</li>
+<li>Test edge cases.</li>
+<li>Test for errors with bad inputs.</li>
+</ul>
+<p>Some developers start writing unit tests before writing the actual function, a practice known as <a href="https://en.wikipedia.org/wiki/Test-driven_development" target="_blank" rel="noopener">Test-Driven Development (TDD)</a>. Define upstream on a piece of paper the behavior of the function, write corresponding tests, and when all tests pass, you are done. This philosophy  ensures that you have a well-tested implementation, and avoids unnecessary feature development, forcing you to focus only on what is needed. While TDD is a powerful idea, it can be challenging to follow strictly.</p>
+<p>A good idea is to write an additional test when you find a bug in your code.</p>
+<h3 id="lightweight-formal-tests-with-assert">Lightweight formal tests with <code>assert</code></h3>
+<p>The simplest form of unit testing involves some sort of <code>assert</code> statement.</p>
+<h4 id="python">Python</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span></code></pre></div><h4 id="julia">Julia</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="nd">@assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span>
+</span></span></code></pre></div><p>When one test is broken, you&rsquo;ll get an error for the corresponding test, which you&rsquo;ll need to fix to check the following tests.</p>
+<p>In Julia or Python, you could directly place the <code>assert</code> statement after your functions. This way, tests are run each time you execute the script. Here is nother pythonic approach, which can be used to decouple the test</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="o">==</span> <span class="mi">102334155</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Tests passed&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>Consider using <code>np.isclose</code>, <code>np.testing.assert_allclose</code> (Python) or <code>approx</code> (Julia) for floating point comparisons.</p>
+<h3 id="testing-with-a-test-suite">Testing with a test suite</h3>
+<p>Once you have many tests, it makes sense to group them into a test suite and run them with a test runner. This approach will run all tests, even though some are broken, and retrieve and informative statements on those tests that passed, and those that did not. As you&rsquo;ll see, it also allows to automatically run the test at each commit, with continuous integration.</p>
+<h4 id="python-1">Python</h4>
+<p>Two main frameworks for unit tests in Python are <code>pytest</code> and <code>unittest</code>, with <code>pytest</code> being more popular.</p>
+<p>Example using <code>pytest</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">src.fib</span> <span class="kn">import</span> <span class="n">fib</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pytest</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">test_typical</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="o">==</span> <span class="mi">102334155</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">test_edge_case</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">fib</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">test_raises</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fib</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fib</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+</span></span></code></pre></div><p>Run the tests with:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">pytest test_fib.py
+</span></span></code></pre></div><h4 id="julia-1">Julia</h4>
+<p>Built in module <code>Test</code>, relying on the macro <code>@test</code>. Consider grouping your tests with</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">julia</span><span class="o">&gt;</span> <span class="nd">@testset</span> <span class="s">&#34;trigonometric identities&#34;</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">          <span class="n">θ</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="o">*</span><span class="nb">π</span>
+</span></span><span class="line"><span class="cl">          <span class="nd">@test</span> <span class="n">sin</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span><span class="p">)</span> <span class="o">≈</span> <span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="nd">@test</span> <span class="n">cos</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span><span class="p">)</span> <span class="o">≈</span> <span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="nd">@test</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="n">θ</span><span class="p">)</span> <span class="o">≈</span> <span class="mi">2</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="nd">@test</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="n">θ</span><span class="p">)</span> <span class="o">≈</span> <span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl">      <span class="k">end</span><span class="p">;</span>
+</span></span></code></pre></div><p>This will nicely output</p>
+<pre tabindex="0"><code>Test Summary:            | Pass  Total  Time
+trigonometric identities |    4      4  0.2s
+</code></pre><p>which comes handy for grouping tests applied to a single function or concept. Test functions may require additional packages to your minimum working environment specified at your package root folder. An additional virtual environment may be specified for tests! To develop my tests interactively, I like using <a href="https://github.com/JuliaTesting/TestEnv.jl" target="_blank" rel="noopener"><code>TestEnv</code></a>. Unfortunately, using <code>Pkg.activate</code> in <code>tests</code> would not work there, you. You need <code>TestEnv</code> to have access to your package functions;</p>
+<p>In your package environment,</p>
+<pre tabindex="0"><code>using TestEnv
+TestEnv.activate()
+</code></pre><p>will activate the test environment.</p>
+<p>To reactivate the normal environment,</p>
+<pre tabindex="0"><code>Pkg.activate(&#34;.&#34;)
+</code></pre><p><a href="https://discourse.julialang.org/t/how-to-use-vscode-and-repl-to-write-and-test-a-package/78818/44" target="_blank" rel="noopener">Here is a nice thread to read more on that</a>.</p>
+<h4 id="r">R</h4>
+<p><a href="https://testthat.r-lib.org" target="_blank" rel="noopener"><code>testhat</code></a></p>
+<h3 id="testing-non-pure-functions-and-classes">Testing non-pure functions and classes</h3>
+<p>For nondeterministic functions, provide the random seed or variables needed by the function as arguments to make them deterministic.
+For stateful functions, test postconditions to ensure the internal state changes as expected.
+For functions with I/O side effects, create mock files to verify proper input reading and expected output.</p>
+<h4 id="python-2">Python</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">file_to_upper</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tempfile</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">test_file_to_upper</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">in_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">in_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&#34;test123</span><span class="se">\n</span><span class="s2">thetest&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">in_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">file_to_upper</span><span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">out_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">assert</span> <span class="n">data</span> <span class="o">==</span> <span class="s2">&#34;TEST123</span><span class="se">\n</span><span class="s2">THETEST&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">out_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span></code></pre></div><h2 id="continuous-integration">Continuous integration</h2>
+<p>Automated testing on local machines is useful, but you can do better with continuous integration (CI). In fact, CI is essential for projects involving multiple developers and various target platforms. CI consists in running tests whenever changes are committed.
+CI can also be used to automatically build documentation, check for code coverage, and more. GitHub Actions is a popular CI tool available within GitHub.
+CI is based on <code>.yaml</code> files, which specify the environment to run the script. You can build matrices to test across different environments (e.g. Linux, Windows and MacOS, with different versino of python or Julia). Jobs will be created that run our tests for each permutation of these.</p>
+<details>
+<summary>An example CI.yaml file for Julia</summary>
+<pre><code>
+name: Run tests
+<p>on:
+push:
+branches:
+- master
+- main
+pull_request:</p>
+<p>permissions:
+actions: write
+contents: read</p>
+<p>jobs:
+test:
+runs-on: ${{ matrix.os }}
+strategy:
+matrix:
+julia-version: [&lsquo;1.6&rsquo;, &lsquo;1&rsquo;, &rsquo;nightly&rsquo;]
+julia-arch: [x64, x86]
+os: [ubuntu-latest, windows-latest, macOS-latest]
+exclude:
+- os: macOS-latest
+julia-arch: x86</p>
+<pre><code>steps:
+  - uses: actions/checkout@v4
+  - uses: julia-actions/setup-julia@v1
+    with:
+      version: ${{ matrix.julia-version }}
+      arch: ${{ matrix.julia-arch }}
+  - uses: julia-actions/cache@v1
+  - uses: julia-actions/julia-buildpkg@v1
+  - uses: julia-actions/julia-runtest@v1
+</code></pre>
+<p></pre></code></p>
+</details>
+<details>
+<summary>An example CI.yaml file for Python</summary>
+<p>This action installs the conda environment called <code>glacier-mass-balance</code>, specified in the <code>environment.yml</code> file.
+It then runs <code>pytest</code>, supposing that you have a <code>test/</code> folder where your functions are located. First try whether <code>pytest</code> works locally. Do not forget to have <code>pytest</code> in your dependencies.</p>
+<pre><code>
+name: Run tests
+on: push
+
+jobs:
+  miniconda:
+    name: Miniconda ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            os: ["ubuntu-latest"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          environment-file: environment.yml
+          activate-environment: glacier-mass-balance
+          auto-activate-base: false
+      - name: Run pytest
+        shell: bash -l {0}
+        run: | 
+          pytest
+</pre></code>
+</details>
+<h4 id="cool-tip">Cool tip</h4>
+<p>You can include a cool badge to show visually whether your tests are passing or failing, like so</p>
+<p><a href="https://github.com/vboussange/rere/actions/workflows/runtest.yml" target="_blank" rel="noopener">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="https://github.com/vboussange/rere/actions/workflows/runtest.yml/badge.svg" alt="Tests" loading="lazy" data-zoomable /></div>
+  </div></figure>
+</a></p>
+<p>You can get the code for this badge by going on your github repo, then Actions. Click on the test action, then on top right click on the <code>...</code> and `Create status badge```.</p>
+<p>Cool right?</p>
+<h2 id="other-types-of-tests">Other types of tests</h2>
+<ul>
+<li><strong>Docstring tests</strong>: Unit tests embedded in docstrings.</li>
+<li><strong>Integration tests</strong>: Test whether multiple functions work correctly together.</li>
+<li><strong>Regression tests</strong>: Ensure your code produces the same outputs as previous versions.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python" target="_blank" rel="noopener">Official GitHub documentation on building and testing Python projects</a></li>
+<li><a href="https://blog.allenai.org/ci-with-github-actions-for-research-code-a8460c21c6ba" target="_blank" rel="noopener">CI with GitHub Action and Docker for Python</a></li>
+<li><a href="https://docs.julialang.org/en/v1/stdlib/Test/" target="_blank" rel="noopener">Julia documentation on unit testing</a></li>
+<li><a href="https://goodresearch.dev/testing.html" target="_blank" rel="noopener">Good Research Practices: Testing</a></li>
+<li><a href="https://carpentries-incubator.github.io/python-testing/" target="_blank" rel="noopener">The Carpentries: Python Testing</a></li>
+</ul>
+<h2 id="take-home-messages">Take-home messages</h2>
+<ul>
+<li>Systematically implementing testing allows you to ensure the sanity of your code</li>
+<li>The overhead cost of testing is usually well balanced by the reduced time spent downstream in identifying bugs</li>
+</ul>
+
+    </div>
+
+    
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/julia/">julia</a>
+  
+  <a class="badge badge-light" href="/tag/python/">python</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://vboussange.github.io/post/testing-your-research-code/&amp;text=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://vboussange.github.io/post/testing-your-research-code/&amp;t=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code&amp;body=https://vboussange.github.io/post/testing-your-research-code/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://vboussange.github.io/post/testing-your-research-code/&amp;title=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code%20https://vboussange.github.io/post/testing-your-research-code/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://vboussange.github.io/post/testing-your-research-code/&amp;title=A%20multi-language%20overview%20on%20how%20to%20test%20your%20research%20project%20code" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://vboussange.github.io"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hue95c9cac2955bb5fc8cb56628af3154e_174591_270x270_fill_q75_lanczos_center.jpg" alt="Victor Boussange"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://vboussange.github.io">Victor Boussange</a></h5>
+      <h6 class="card-subtitle">Postdoctoral researcher</h6>
+      <p class="card-text">Researcher in ecology and evolution, scientific machine learning enthusiastic.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:vic.boussange@gmail.com" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=SaQH5YoAAAAJ&amp;hl=en" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/vboussange" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/uploads/CV_vboussange.pdf" >
+        <i class="ai ai-cv"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://orcid.org/0000-0002-4202-3599" target="_blank" rel="noopener">
+        <i class="ai ai-orcid"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+  
+    
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  
+  
+  
+
+  
+  
+    
+  
+  
+    
+  
+
+  
+
+  
+  <p class="powered-by copyright-license-text">
+    © 2025 Me. This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">CC BY NC ND 4.0</a>
+  </p>
+  
+
+  <p class="powered-by footer-license-icons">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank" aria-label="Creative Commons">
+      <i class="fab fa-creative-commons fa-2x" aria-hidden="true"></i>
+      <i class="fab fa-creative-commons-by fa-2x" aria-hidden="true"></i>
+      
+        <i class="fab fa-creative-commons-nc fa-2x" aria-hidden="true"></i>
+      
+      
+        <i class="fab fa-creative-commons-nd fa-2x" aria-hidden="true"></i>
+      
+    </a>
+  </p>
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.3d946de2e8784a477845261d87025092.js"></script>
+
+    
+    
+    
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/latex.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/julia.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdn.jsdelivr.net/gh/krisk/Fuse@v3.2.1/dist/fuse.min.js" integrity="sha512-o38bmzBGX+hD3JHWUFCDA09btWaqrNmoJ3RXLlrysA7PP01Kgs4UlE4MhelE1v5dJR3+cxlR4qQlotsW7jKsnw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/julmot/mark.js@8.11.1/dist/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+
+    
+    
+    
+    <script id="page-data" type="application/json">{"use_headroom":true}</script>
+
+    
+    
+      <script src="/js/wowchemy-headroom.e8fd2d733eef6a8bbbe0539398fc0547.js" type="module"></script>
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.de33c90527762392d440555c36739dd9.js"></script>
+
+    
+    
+    
+    
+    
+    
+      
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="/js/wowchemy-publication.b0d291ed6d27eacec233e6cf5204f99a.js" type="module"></script>
+
+
+
+
+
+
+</body>
+</html>
