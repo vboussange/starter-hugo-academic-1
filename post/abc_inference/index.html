@@ -1,0 +1,1719 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.5.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Victor Boussange" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="In this tutorial, you&#39;ll learn the basics of approximate Bayesian computation (ABC). ABC is an inference method with very little requirements in terms of the model structure - yet it can be very powerful. It is very simple to apply to any model, and to understand. We&#39;ll play around with Julia, and we will visualize graphically the inference results, so that you can build an intuition of the inference method." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://vboussange.github.io/post/abc_inference/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.c7b8d9abd591ba2253ea42747e3ac3f5.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.e86434ae70bd28d2a9bb384cdaa99ea3.css" />
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://vboussange.github.io/post/abc_inference/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@wowchemy" />
+    <meta property="twitter:creator" content="@wowchemy" />
+  
+  <meta property="og:site_name" content="Victor Boussange" />
+  <meta property="og:url" content="https://vboussange.github.io/post/abc_inference/" />
+  <meta property="og:title" content="A practical introduction to approximate Bayesian computation | Victor Boussange" />
+  <meta property="og:description" content="In this tutorial, you&#39;ll learn the basics of approximate Bayesian computation (ABC). ABC is an inference method with very little requirements in terms of the model structure - yet it can be very powerful. It is very simple to apply to any model, and to understand. We&#39;ll play around with Julia, and we will visualize graphically the inference results, so that you can build an intuition of the inference method." /><meta property="og:image" content="https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png" />
+    <meta property="twitter:image" content="https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_512x512_fill_lanczos_center_3.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2022-11-27T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2022-11-27T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://vboussange.github.io/post/abc_inference/"
+  },
+  "headline": "A practical introduction to approximate Bayesian computation",
+  
+  "datePublished": "2022-11-27T00:00:00Z",
+  "dateModified": "2022-11-27T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Victor Boussange"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Victor Boussange",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://vboussange.github.io/media/icon_hua3c898eed18b98379688891d5011a1d0_203625_192x192_fill_lanczos_center_3.png"
+    }
+  },
+  "description": "In this tutorial, you'll learn the basics of approximate Bayesian computation (ABC). ABC is an inference method with very little requirements in terms of the model structure - yet it can be very powerful. It is very simple to apply to any model, and to understand. We'll play around with Julia, and we will visualize graphically the inference results, so that you can build an intuition of the inference method."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+processEscapes: true
+}
+});
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+  <title>A practical introduction to approximate Bayesian computation | Victor Boussange</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="827bc8ba64f84c1710ee9a2013ac1221" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.e22a2a20712150175b9cd707be2d0584.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/">Victor Boussange</a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#about"><span>Home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#softwares"><span>🧑🏽‍💻 Softwares</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#publications"><span>📄 Publications & Talks</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#teaching"><span>🎓 Teaching & resources</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#posts"><span>💬 Posts</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+        
+
+        
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+        
+        
+        <li class="nav-item dropdown theme-dropdown">
+          <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+            <i class="fas fa-moon" aria-hidden="true"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item js-set-theme-light">
+              <span>Light</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-dark">
+              <span>Dark</span>
+            </a>
+            <a href="#" class="dropdown-item js-set-theme-auto">
+              <span>Automatic</span>
+            </a>
+          </div>
+        </li>
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    
+    
+    
+
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>A practical introduction to approximate Bayesian computation</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Nov 27, 2022
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    10 min read
+  </span>
+  
+
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <h2 id="introduction">Introduction</h2>
+<p>In this tutorial, we&rsquo;ll learn the basics of approximate Bayesian computation (ABC). <!-- and Bayesian inference, and compare the two approaches. -->
+ABC is a very flexible inference method that is quite intuitive, and that you can apply to almost any model type. As such, it is quite handy to have it in one&rsquo;s toolbox! To build up an intuition of the method, we&rsquo;ll perform ABC on a very simple ecosystem model, using Julia, and will visualize graphically the inference results.</p>
+<h2 id="package-loading">Package loading</h2>
+<p>We first need to load a few packages.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">cd</span><span class="p">(</span><span class="nd">@__DIR__</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Pkg</span><span class="p">;</span> <span class="n">Pkg</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Random</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">LinearAlgebra</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="n">Optimisers</span><span class="o">:</span><span class="n">destructure</span> <span class="c"># required to simplify parameter indexing</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">UnPack</span> <span class="c"># for parameter indexing</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">ApproxBayes</span> <span class="c"># ABC toolbox</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Distributions</span> <span class="c"># useful to define the priors</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">OrdinaryDiffEq</span> <span class="c"># ODE solver library</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">ParametricModels</span> <span class="c"># convenience package for ODE models. /!\ package not registered</span>
+</span></span></code></pre></div><!--
+using ComponentArrays # a nice package to index vectors in a similar style as NamedTuples, but behaving as Vectors
+-->
+<p>It is always important to make your work reproducible, so we&rsquo;ll set manually a seed to the random number generator.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="c"># Set a seed for reproducibility.</span>
+</span></span><span class="line"><span class="cl"><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
+</span></span></code></pre></div><h2 id="model-definition-and-data-generation">Model definition and data generation</h2>
+<p>What we&rsquo;ll do is to implement an Ordinary Differential Equation model, which will be used to generate synthetic data and further perform the inference. The idea here is to consider this synthetic data as our empirical data, and pretend that we do not know which parameters generated this data. Our goal is then to recover the generating parameters.</p>
+<p>We&rsquo;ll consider a predator-prey ecological model, the <a href="https://en.wikipedia.org/wiki/Lotka%e2%80%93Volterra_equations" target="_blank" rel="noopener">Lotka-Volterra equations</a>. This model has a total of four different parameters $\alpha, \beta, \gamma, \delta$, that describe the interactions between the two species. For the sake of simplicity, we&rsquo;ll assume that we know perfectly the parameters $\gamma, \delta$, and seek to infer $\alpha$ and $\beta$. Assuming to know $\gamma, \delta$ is of course a very unrealistic assumption&hellip; but a handy assumption to develop an intuition about parameter inference.</p>
+<p>We use <a href="https://github.com/vboussange/ParametricModels.jl" target="_blank" rel="noopener"><strong>ParametricModels.jl</strong></a> to define our model. <strong>ParametricModels.jl</strong> is a simple wrapper around <strong>OrdinaryDiffEq.jl</strong>, that allows to play around with the model without bothering further about the details of the numerical solve. This makes it easier to simulate repeatedly an ODE model. For readability and maintenance, we&rsquo;ll encapsulate the parameters in a <code>NamedTuple</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="c"># Declaration of the model</span>
+</span></span><span class="line"><span class="cl"><span class="n">ParametricModels</span><span class="o">.</span><span class="nd">@model</span> <span class="n">LotkaVolterra</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Definition of the model</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="p">(</span><span class="n">lv</span><span class="o">::</span><span class="kt">LotkaVolterra</span><span class="p">)(</span><span class="n">du</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Model parameters</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@unpack</span> <span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="o">=</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Current state</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">u</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># fixed parameters</span>
+</span></span><span class="line"><span class="cl">    <span class="n">γ</span> <span class="o">=</span> <span class="mf">3.0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">δ</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c"># Evaluate differential equations</span>
+</span></span><span class="line"><span class="cl">    <span class="n">du</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">α</span><span class="p">[]</span> <span class="o">-</span> <span class="n">β</span><span class="p">[]</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="c"># prey</span>
+</span></span><span class="line"><span class="cl">    <span class="n">du</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">δ</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span> <span class="c"># predator</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">nothing</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Define initial-value problem.</span>
+</span></span><span class="line"><span class="cl"><span class="n">u0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">α</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">],</span> <span class="n">β</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">LotkaVolterra</span><span class="p">(</span><span class="n">ModelParams</span><span class="p">(;</span><span class="n">u0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">Tsit5</span><span class="p">(),</span> <span class="n">saveat</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">sol</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+</span></span></code></pre></div><p>And here we go, we have our model defined!</p>
+<blockquote>
+<p>As an exercise, you could try to write the same model with OrdinaryDiffEq.jl.</p>
+</blockquote>
+<p>Let&rsquo;s now plot the model output.
+We first need to import some plotting utilities.
+For plotting, I tend to use <strong>PyPlot.jl</strong>, which is a wrapper around the Python library matplotlib. I find it much more convenient than the Julia package <strong>Plots.jl</strong>, in the sense that it contains more utility functions. It is always a good idea to load in parallel <strong>PyCall.jl</strong>, which allows to import other utility funtions from Python.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">PyPlot</span> <span class="c"># to plot 3d landscape</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">PyCall</span>
+</span></span></code></pre></div><p>Here is a plot of the model output without noise:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">PyPlot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">PyPlot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="o">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /post/abc_inference/figures/ABC_inference_5_1_hucdb6458e3b25350f8551ad1e3251f763_35468_10bf87e56cdd2851c45e0a172048665f.webp 400w,
+               /post/abc_inference/figures/ABC_inference_5_1_hucdb6458e3b25350f8551ad1e3251f763_35468_41dd8931b4d60dd6a253be990e7d5bdc.webp 760w,
+               /post/abc_inference/figures/ABC_inference_5_1_hucdb6458e3b25350f8551ad1e3251f763_35468_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/post/abc_inference/figures/ABC_inference_5_1_hucdb6458e3b25350f8551ad1e3251f763_35468_10bf87e56cdd2851c45e0a172048665f.webp"
+               width="534"
+               height="413"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p>We now use <code>sol</code> to generate synthetic data containing some noise (in mathematical terms, we call this a Gaussian white noise, which follows $\mathcal{N}(0,\sigma)$ where $\sigma = 0.8$.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">σ</span> <span class="o">=</span> <span class="mf">0.8</span>
+</span></span><span class="line"><span class="cl"><span class="n">odedata</span> <span class="o">=</span> <span class="kt">Array</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">+</span> <span class="n">σ</span> <span class="o">*</span> <span class="n">randn</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">sol</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">PyPlot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">odedata</span><span class="o">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /post/abc_inference/figures/ABC_inference_6_1_huc39f137fb0520e60b8d30ebada637e27_49282_fe75bc2def97c7450c20c8a5c010de53.webp 400w,
+               /post/abc_inference/figures/ABC_inference_6_1_huc39f137fb0520e60b8d30ebada637e27_49282_8a450dff23b9ae9e140042ff9a47affe.webp 760w,
+               /post/abc_inference/figures/ABC_inference_6_1_huc39f137fb0520e60b8d30ebada637e27_49282_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/post/abc_inference/figures/ABC_inference_6_1_huc39f137fb0520e60b8d30ebada637e27_49282_fe75bc2def97c7450c20c8a5c010de53.webp"
+               width="534"
+               height="413"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p>The model and the synthetic data are ready, let&rsquo;s get started with ABC!</p>
+<h2 id="approximate-bayesian-computation">Approximate Bayesian computation</h2>
+<p>For ABC, one needs to define a function $\rho$ that measures the distance between the model output $\hat \mu$ (in the picture below, $\mu_i$) and the empirical data $\mu$.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Approximate_Bayesian_computation_conceptual_overview.svg" alt="source: Wikipedia" loading="lazy" data-zoomable /></div>
+  </div></figure>
+</p>
+<p>In our case, the empirical data available (<code>odedata</code>) allows us to explicitly define the likelihood of the model given the data. As a distance function, we therefore can first use the negative log of the likelihood. For additive Gaussian noise, the likelihood of the model is given by</p>
+<p>$$\begin{split}
+p(y_{1:K} | \theta, \mathcal{M}) &amp;= \prod_{i=1}^K p(y_{i} | \theta, \mathcal{M})\\
+&amp;= \prod_{k=1}^K \frac{1}{\sqrt{(2\pi)^d|\Sigma_y|}} \exp \left(-\frac{1}{2} \epsilon_k^{T} \Sigma_y^{-1} \epsilon_k \right)
+\end{split}$$</p>
+<p>where $\epsilon_k \equiv \epsilon(t_k) = y(t_k) - h\left(\mathcal{M}(t_k, \theta)\right)$ and $\Sigma_y = \sigma^2 I$ in our case.</p>
+<p>So let&rsquo;s translate all this in Julia code.</p>
+<p><strong>ApproxBayes.jl</strong> requires as input a function <code>simfunc(params, constants, data)</code>, which plays the role of the $\rho$ function. It should return the distance value, as well as a second value that may be used for logging. To make things simple, we&rsquo;ll return <code>nothing</code> for this second value.</p>
+<p>Because <strong>ApproxBayes.jl</strong> requires that <code>params</code> is an array (<code>params &lt;: AbstractArray</code>), we further use a special trick relying on the function <code>Optimiser.destructure</code>. This utility function allows to generate a function <code>re</code> that can recover a <code>NamedTuple</code> from a vector. Very useful in combination with the utility macro <code>@unpack</code>!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">_</span><span class="p">,</span> <span class="n">re</span> <span class="o">=</span> <span class="n">destructure</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">;</span> <span class="n">odedata</span><span class="o">=</span><span class="n">odedata</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p_tuple</span> <span class="o">=</span> <span class="n">re</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pred</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p_tuple</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">sum</span><span class="p">([</span><span class="n">loglikelihood</span><span class="p">(</span><span class="n">MvNormal</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">LinearAlgebra</span><span class="o">.</span><span class="n">I</span> <span class="o">*</span> <span class="n">σ</span><span class="o">^</span><span class="mi">2</span><span class="p">),</span> <span class="n">odedata</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">pred</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">odedata</span><span class="p">,</span><span class="mi">2</span><span class="p">)])</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="n">simfunc</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ρ</span> <span class="o">=</span> <span class="o">-</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">odedata</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ρ</span><span class="p">,</span> <span class="nb">nothing</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># testing function</span>
+</span></span><span class="line"><span class="cl"><span class="n">simfunc</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="nb">nothing</span><span class="p">,</span> <span class="n">odedata</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>(1403.0830673958446, nothing)
+</code></pre><p>Now that the distance function is implemented, we define the priors on the parameters $\alpha, \beta$</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">priors</span> <span class="o">=</span> <span class="p">[</span><span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="c"># for α and β</span>
+</span></span><span class="line"><span class="cl">            <span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">500</span>
+</span></span><span class="line"><span class="cl"><span class="n">max_iterations</span> <span class="o">=</span> <span class="mf">1e5</span>
+</span></span><span class="line"><span class="cl"><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">2.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">abcsetup</span> <span class="o">=</span> <span class="n">ABCRejection</span><span class="p">(</span><span class="n">simfunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">length</span><span class="p">(</span><span class="n">priors</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ϵ</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ApproxBayes</span><span class="o">.</span><span class="n">Prior</span><span class="p">(</span><span class="n">priors</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">nparticles</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">maxiterations</span><span class="o">=</span><span class="n">max_iterations</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">abcresult</span> <span class="o">=</span> <span class="n">runabc</span><span class="p">(</span><span class="n">abcsetup</span><span class="p">,</span> <span class="n">odedata</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Preparing to run in parallel on 5 processors
+Number of simulations: 1.00e+05
+Acceptance ratio: 5.00e-03
+
+Median (95% intervals):
+Parameter 1: 1.51 (1.48,1.53)
+Parameter 2: 1.00 (0.86,1.16)
+</code></pre><p>And here we go: <code>abcresult</code> informs us that the ABC inference could indeed recover the parameters that generated the data!</p>
+<h2 id="visualizing-the-inference-process">Visualizing the inference process</h2>
+<p>To better understand what has happened, let&rsquo;s plot the parameters that have been accepted by the sampler, together with the real likelihood landscape. As a first step, let&rsquo;s visualise the real likelihoood landscape.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">αs</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">1.45</span><span class="p">,</span> <span class="mf">1.55</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">βs</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">likelihoods</span> <span class="o">=</span> <span class="kt">Float64</span><span class="p">[]</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">α</span> <span class="k">in</span> <span class="n">αs</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">β</span> <span class="k">in</span> <span class="n">βs</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">push!</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">,</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">likelihoods</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">);</span> <span class="c"># exponentiating, to make it visually nicer</span>
+</span></span></code></pre></div><p>We now define an <code>Axes3D</code>, as you would do it in Python:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="c"># Plotting 3d landscape</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span> <span class="o">=</span> <span class="n">Axes3D</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">computed_zorder</span><span class="o">=</span><span class="nb">false</span><span class="p">);</span>
+</span></span></code></pre></div><p>We&rsquo;ll import numpy into Julia, to easily construct the meshgrid required by the matplotlib function <code>plot_surface</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">np</span> <span class="o">=</span> <span class="n">pyimport</span><span class="p">(</span><span class="s">&#34;numpy&#34;</span><span class="p">)</span> <span class="c"># used for plotting</span>
+</span></span><span class="line"><span class="cl"><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">αs</span><span class="p">,</span> <span class="n">βs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># fig.savefig(&#34;perturbed_p.png&#34;, dpi = 300, bbox_inches=&#34;tight&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">X</span> <span class="o">.|&gt;</span> <span class="kt">Float64</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Y</span> <span class="o">.|&gt;</span> <span class="kt">Float64</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">reshape</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">,</span> <span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">αs</span><span class="p">),</span> <span class="n">length</span><span class="p">(</span><span class="n">βs</span><span class="p">)))</span> <span class="o">.|&gt;</span> <span class="kt">Float64</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#34;0.7&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmap</span><span class="o">=</span><span class="s">&#34;Blues&#34;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;p_1&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;p_2&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s">&#34;Likelihood&#34;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">([])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># make the panes transparent</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c"># make the grid lines transparent</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">_axinfo</span><span class="p">[</span><span class="s">&#34;grid&#34;</span><span class="p">][</span><span class="s">&#34;color&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">_axinfo</span><span class="p">[</span><span class="s">&#34;grid&#34;</span><span class="p">][</span><span class="s">&#34;color&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">_axinfo</span><span class="p">[</span><span class="s">&#34;grid&#34;</span><span class="p">][</span><span class="s">&#34;color&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s">&#34;None&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s">&#34;None&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">p</span> <span class="k">in</span> <span class="n">eachrow</span><span class="p">(</span><span class="n">abcresult</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="n">c</span><span class="o">=</span><span class="s">&#34;tab:red&#34;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="n">abcresult</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">exp</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="n">c</span><span class="o">=</span><span class="s">&#34;tab:red&#34;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Accepted simulation&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /post/abc_inference/figures/ABC_inference_11_1_hue5e5a179350410f4b72fddccf6a75592_119823_2ea767db18c792542b20b0c21202640e.webp 400w,
+               /post/abc_inference/figures/ABC_inference_11_1_hue5e5a179350410f4b72fddccf6a75592_119823_e509afc1856e3da09f0b10cc169b4837.webp 760w,
+               /post/abc_inference/figures/ABC_inference_11_1_hue5e5a179350410f4b72fddccf6a75592_119823_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/post/abc_inference/figures/ABC_inference_11_1_hue5e5a179350410f4b72fddccf6a75592_119823_2ea767db18c792542b20b0c21202640e.webp"
+               width="538"
+               height="499"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p>Cool, right?</p>
+<h2 id="summary-statistics">Summary statistics</h2>
+<p>It may be useful, or necessary, to use summary statistics of the data instead of the full likelihood, to be provided to the distance function. Summary statistics are values calculated from the data to represent the maximum amount of information in the simplest possible form. Using summary statistics allows to reduce the dimensionality of the data, which increases the probability of accepting the model output. In our case, the dimensionality correponds to the number of time steps multiplied by the number of state variables). Using summary statistics may prove useful to improve the convergence of the inference process, were the inference not converge using the likelihood function. But because it reduces the amount of information provided to the inference method, it may also hamper a precise characterisation of the model parameter values.</p>
+<!-- ### Note: to improve performance, you could increase the time series length -->
+<h3 id="mean-and-variance">Mean and variance</h3>
+<p>As summary statistics, we can here compute the mean and covariance matrix of the state variables, and use those to define the distance between the model output and the data.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">);</span> <span class="n">cov</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="o">:</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl"><span class="n">ss_data</span> <span class="o">=</span> <span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">odedata</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>6×1 Matrix{Float64}:
+ 2.966416873264894
+ 1.5414956648089986
+ 4.784360022666909
+ 0.07385819785251807
+ 0.07385819785251807
+ 2.680060599643699
+</code></pre><p>Let&rsquo;s now proceed similarly to above</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">function</span> <span class="n">simfunc</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p_tuple</span> <span class="o">=</span> <span class="n">re</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pred</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p_tuple</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ss_pred</span> <span class="o">=</span> <span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ρ</span> <span class="o">=</span> <span class="n">sum</span><span class="p">((</span><span class="n">ss_pred</span> <span class="o">.-</span> <span class="n">ss_data</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span> <span class="c"># taking euclidean distance between</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ρ</span><span class="p">,</span> <span class="nb">nothing</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">simfunc</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="nb">nothing</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">priors</span> <span class="o">=</span> <span class="p">[</span><span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="c"># for α and β</span>
+</span></span><span class="line"><span class="cl">            <span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">500</span>
+</span></span><span class="line"><span class="cl"><span class="n">max_iterations</span> <span class="o">=</span> <span class="mf">1e5</span>
+</span></span><span class="line"><span class="cl"><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.15</span>
+</span></span><span class="line"><span class="cl"><span class="n">abcsetup</span> <span class="o">=</span> <span class="n">ABCRejection</span><span class="p">(</span><span class="n">simfunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">length</span><span class="p">(</span><span class="n">priors</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ϵ</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ApproxBayes</span><span class="o">.</span><span class="n">Prior</span><span class="p">(</span><span class="n">priors</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">nparticles</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">maxiterations</span><span class="o">=</span><span class="n">max_iterations</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">abcresult</span> <span class="o">=</span> <span class="n">runabc</span><span class="p">(</span><span class="n">abcsetup</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Preparing to run in parallel on 5 processors
+Number of simulations: 1.00e+05
+Acceptance ratio: 5.00e-03
+
+Median (95% intervals):
+Parameter 1: 2.10 (1.98,2.30)
+Parameter 2: 1.11 (1.01,1.23)
+</code></pre><p>As you can see, the results of the inference or much less accurate.</p>
+<blockquote>
+<p>Which other summary statistics of the time series could you think of? You can find below tests with other summary statistics.</p>
+</blockquote>
+<p>And that&rsquo;s it for today! Hopefully this tutorial has given you some basics and intuition on ABC, and how to use in Julia.</p>
+<h2 id="further-references">Further references</h2>
+<ul>
+<li><a href="https://royalsocietypublishing.org/doi/epdf/10.1098/rsos.191315" target="_blank" rel="noopener">A comparison of approximate versus exact techniques for Bayesian inference in nonlinear ordinary differential equations, Alahmadi et al. 2020.</a></li>
+</ul>
+<h2 id="appendix">Appendix</h2>
+<p>You can find the corresponding tutorial as a <code>.jmd</code> file at <a href="https://github.com/vboussange/MyTutorials" target="_blank" rel="noopener">https://github.com/vboussange/MyTutorials</a>. To use <code>ParametricModels.jl</code>, follow the procedure indicated on the <a href="https://github.com/vboussange/ParametricModels.jl" target="_blank" rel="noopener">github repo</a>.
+Please contact me, if you have found a mistake, or if you have any comment or suggestion on how to improve this tutorial.</p>
+<h3 id="summary-statistics-with-fourier-transforms">Summary statistics with Fourier transforms</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">FFTW</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Fourier Transform of the data</span>
+</span></span><span class="line"><span class="cl"><span class="n">F</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">odedata</span> <span class="o">.-</span> <span class="n">mean</span><span class="p">(</span><span class="n">odedata</span><span class="p">,</span><span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="n">fftshift</span>
+</span></span><span class="line"><span class="cl"><span class="c"># freqs = fftfreq(size(odedata, 2), 1.0/Ts) |&gt; fftshift</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">odedata</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="o">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /post/abc_inference/figures/ABC_inference_14_1_huf3e8fff0c7866b27a768f5422b0e36a5_37592_478dd637fc58a357ba2a3ea2ab02c168.webp 400w,
+               /post/abc_inference/figures/ABC_inference_14_1_huf3e8fff0c7866b27a768f5422b0e36a5_37592_994f97353b9d06a972bc7a7d195f6f37.webp 760w,
+               /post/abc_inference/figures/ABC_inference_14_1_huf3e8fff0c7866b27a768f5422b0e36a5_37592_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/post/abc_inference/figures/ABC_inference_14_1_huf3e8fff0c7866b27a768f5422b0e36a5_37592_478dd637fc58a357ba2a3ea2ab02c168.webp"
+               width="552"
+               height="413"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p>Let&rsquo;s select the frequency which frequency is predominent, and consider it for our summary statistics</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">freq_x</span> <span class="o">=</span> <span class="n">sortperm</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">]))[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="p">]</span> <span class="c"># selecting the two most important frequencies</span>
+</span></span><span class="line"><span class="cl"><span class="n">freq_y</span> <span class="o">=</span> <span class="n">sortperm</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">]))[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="p">]</span> <span class="c"># selecting the two most important frequencies</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@assert</span> <span class="n">freq_x</span> <span class="o">==</span> <span class="n">freq_y</span> <span class="c"># both prey and predator data peak at the same frequencies</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">F</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="n">fftshift</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">freq_x</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="n">ss_data</span> <span class="o">=</span> <span class="n">compute_summary_stats</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">odedata</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">simfunc</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="nb">nothing</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>(29583.477061802652, nothing)
+</code></pre><p>Let&rsquo;s now proceed similarly to above</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">priors</span> <span class="o">=</span> <span class="p">[</span><span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="c"># for α and β</span>
+</span></span><span class="line"><span class="cl">            <span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">500</span>
+</span></span><span class="line"><span class="cl"><span class="n">max_iterations</span> <span class="o">=</span> <span class="mf">1e5</span>
+</span></span><span class="line"><span class="cl"><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.15</span>
+</span></span><span class="line"><span class="cl"><span class="n">abcsetup</span> <span class="o">=</span> <span class="n">ABCRejection</span><span class="p">(</span><span class="n">simfunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">length</span><span class="p">(</span><span class="n">priors</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ϵ</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ApproxBayes</span><span class="o">.</span><span class="n">Prior</span><span class="p">(</span><span class="n">priors</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">nparticles</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">maxiterations</span><span class="o">=</span><span class="n">max_iterations</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">abcresult</span> <span class="o">=</span> <span class="n">runabc</span><span class="p">(</span><span class="n">abcsetup</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Preparing to run in parallel on 5 processors
+Number of simulations: 1.00e+05
+Acceptance ratio: 5.00e-03
+
+Median (95% intervals):
+Parameter 1: 1.44 (1.05,2.38)
+Parameter 2: 0.92 (0.26,0.99)
+</code></pre><p>Although we have quite a large uncertainty on the parameters, the Fourier transform-based summary statistics seem to contain more relevant information, and this is reflected on the more accurate value of the inferred parameters.</p>
+<h3 id="summary-statistics-with-auto-correlation">Summary statistics with auto-correlation</h3>
+<p>Here we use the autocorrelation function to build our summary statistics. The default lag value of the <code>autocor</code> in Julia reduces the dimension of the data to a matrix of size <code>21x2</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">StatsBase</span>
+</span></span><span class="line"><span class="cl"><span class="n">autocor_ss</span> <span class="o">=</span> <span class="n">autocor</span><span class="p">(</span><span class="n">odedata</span><span class="o">&#39;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">autocor_ss</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">autocor_ss</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /post/abc_inference/figures/ABC_inference_17_1_huf8f82d6c21e7566f8bed642803039825_24081_4fbdb8f8f0815e361bca6602e1f61e4c.webp 400w,
+               /post/abc_inference/figures/ABC_inference_17_1_huf8f82d6c21e7566f8bed642803039825_24081_39194e2af4c14c64a3505a2a85e2c4ba.webp 760w,
+               /post/abc_inference/figures/ABC_inference_17_1_huf8f82d6c21e7566f8bed642803039825_24081_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/post/abc_inference/figures/ABC_inference_17_1_huf8f82d6c21e7566f8bed642803039825_24081_4fbdb8f8f0815e361bca6602e1f61e4c.webp"
+               width="559"
+               height="413"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p>If we were to compute the lag from $t = 0$ to $t = t_{\text{max}}$, we would obtain a sinusoidal curve, similar to the time series raw data.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">autocor</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ss_data</span> <span class="o">=</span> <span class="n">compute_summary_stats</span><span class="p">(</span><span class="n">odedata</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">simfunc</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="nb">nothing</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>(1.4530748281677037, nothing)
+</code></pre><p>Let&rsquo;s now proceed similarly to above</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">priors</span> <span class="o">=</span> <span class="p">[</span><span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="c"># for α and β</span>
+</span></span><span class="line"><span class="cl">            <span class="n">truncated</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">500</span>
+</span></span><span class="line"><span class="cl"><span class="n">max_iterations</span> <span class="o">=</span> <span class="mf">1e5</span>
+</span></span><span class="line"><span class="cl"><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.15</span>
+</span></span><span class="line"><span class="cl"><span class="n">abcsetup</span> <span class="o">=</span> <span class="n">ABCRejection</span><span class="p">(</span><span class="n">simfunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">length</span><span class="p">(</span><span class="n">priors</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ϵ</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">ApproxBayes</span><span class="o">.</span><span class="n">Prior</span><span class="p">(</span><span class="n">priors</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">nparticles</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">maxiterations</span><span class="o">=</span><span class="n">max_iterations</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">abcresult</span> <span class="o">=</span> <span class="n">runabc</span><span class="p">(</span><span class="n">abcsetup</span><span class="p">,</span> <span class="n">ss_data</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Preparing to run in parallel on 5 processors
+Number of simulations: 1.00e+05
+Acceptance ratio: 5.00e-03
+
+Median (95% intervals):
+Parameter 1: 1.53 (1.45,1.61)
+Parameter 2: 0.35 (0.29,0.41)
+</code></pre>
+    </div>
+
+    
+
+
+
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://vboussange.github.io/post/abc_inference/&amp;text=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://vboussange.github.io/post/abc_inference/&amp;t=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation&amp;body=https://vboussange.github.io/post/abc_inference/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://vboussange.github.io/post/abc_inference/&amp;title=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation%20https://vboussange.github.io/post/abc_inference/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://vboussange.github.io/post/abc_inference/&amp;title=A%20practical%20introduction%20to%20approximate%20Bayesian%20computation" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://vboussange.github.io"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hue95c9cac2955bb5fc8cb56628af3154e_174591_270x270_fill_q75_lanczos_center.jpg" alt="Victor Boussange"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://vboussange.github.io">Victor Boussange</a></h5>
+      <h6 class="card-subtitle">Postdoctoral researcher</h6>
+      <p class="card-text">Researcher in ecology and evolution, scientific machine learning enthusiastic.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:vic.boussange@gmail.com" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=SaQH5YoAAAAJ&amp;hl=en" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/vboussange" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/uploads/CV_vboussange.pdf" >
+        <i class="ai ai-cv"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://orcid.org/0000-0002-4202-3599" target="_blank" rel="noopener">
+        <i class="ai ai-orcid"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  
+  
+  
+
+  
+  
+    
+  
+  
+    
+  
+
+  
+
+  
+  <p class="powered-by copyright-license-text">
+    © 2025 Me. This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">CC BY NC ND 4.0</a>
+  </p>
+  
+
+  <p class="powered-by footer-license-icons">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank" aria-label="Creative Commons">
+      <i class="fab fa-creative-commons fa-2x" aria-hidden="true"></i>
+      <i class="fab fa-creative-commons-by fa-2x" aria-hidden="true"></i>
+      
+        <i class="fab fa-creative-commons-nc fa-2x" aria-hidden="true"></i>
+      
+      
+        <i class="fab fa-creative-commons-nd fa-2x" aria-hidden="true"></i>
+      
+    </a>
+  </p>
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.3d946de2e8784a477845261d87025092.js"></script>
+
+    
+    
+    
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/latex.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/julia.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdn.jsdelivr.net/gh/krisk/Fuse@v3.2.1/dist/fuse.min.js" integrity="sha512-o38bmzBGX+hD3JHWUFCDA09btWaqrNmoJ3RXLlrysA7PP01Kgs4UlE4MhelE1v5dJR3+cxlR4qQlotsW7jKsnw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/julmot/mark.js@8.11.1/dist/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+
+    
+    
+    
+    <script id="page-data" type="application/json">{"use_headroom":true}</script>
+
+    
+    
+      <script src="/js/wowchemy-headroom.e8fd2d733eef6a8bbbe0539398fc0547.js" type="module"></script>
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.de33c90527762392d440555c36739dd9.js"></script>
+
+    
+    
+    
+    
+    
+    
+      
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="/js/wowchemy-publication.b0d291ed6d27eacec233e6cf5204f99a.js" type="module"></script>
+
+
+
+
+
+
+</body>
+</html>
